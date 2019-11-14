@@ -210,5 +210,5 @@ app.get('/api/validate-token', (req, res) => {
 })
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/iterative_design/build/index.html'))
+    res.sendFile(path.join(__dirname + '/iterative_design/public/index.html'))
 })
