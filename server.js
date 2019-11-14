@@ -120,23 +120,20 @@ app.post('/api/change-address-information', (req, res) => {
     const errors = {}
     const userEmail = params.userEmail
     const zipcode = params[ZIP_PROPERTY].value
+    /*
     db.get("SELECT zip_code FROM valid_zip_codes WHERE zip_code=?", [zipcode], (err, row) => {
         if (err) {
             return res.status(400).json({ errors: { [ZIP_PROPERTY]: err.message } })
         }
-        const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
-        if (!row) {
-            let errorMessage = zipcodeRegex.test(zipcode) ?
-                "Unfortunately, we currently don't serve your area." :
-                "Invalid Zip Code Given"
-            return res.status(400).json({ errors: { [ZIP_PROPERTY]: errorMessage } })
-        }
-        const sqlParams = [zipcode, params[ADDRESS_PROPERTY].value, userEmail]
-        console.log(sqlParams)
-        db.run("UPDATE user SET zip_code=?, address=? where user.email=?", sqlParams, (err) => {
-            console.log(err)
-            return res.status(200).json({});
-        })
+        */
+    const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
+    if (!zipcodeRegex.test(zipcode)) {
+        const errorMessage = "Invalid Zip Code Given"
+        return res.status(400).json({ errors: { [ZIP_PROPERTY]: errorMessage } })
+    }
+    const sqlParams = [zipcode, params[ADDRESS_PROPERTY].value, userEmail]
+    db.run("UPDATE user SET zip_code=?, address=? where user.email=?", sqlParams, (err) => {
+        return res.status(200).json({});
     })
 })
 app.post('/api/change-password', (req, res) => {
