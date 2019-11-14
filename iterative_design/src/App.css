@@ -812,3 +812,20 @@ svg.icon-gear {
   background: white;
   margin-top: 25px;
 }
+
+.privacy-policy-outer {
+  background-color: #f2f2f2;
+  border-radius: 4px;
+  width: 750px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+  margin-top: 100px;
+  padding: 32px;
+}
+.privacy-policy-header {
+  font: 24px Roboto;
+  color: #6c757d;
+  margin-top: 100px;
+  margin-left: 100px;
+}

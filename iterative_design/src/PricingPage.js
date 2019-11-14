@@ -42,7 +42,7 @@ export default class PricingPage extends React.Component {
                 const newSessionInfo = this.state.sessionUser
                 newSessionInfo.chosenPlan.name = planName
                 this.setState({ sessionUser: newSessionInfo, checkedAuthentication: true })
-                //window.location.href = "/grocery-list"
+                window.location.href = "/store"
             }
         })
     }

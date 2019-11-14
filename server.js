@@ -238,6 +238,19 @@ app.post('/api/login', (req, res) => {
 });
 
 const validateZipcode = async (zipcode, res) => {
+    const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
+    if (!zipcodeRegex.test(zipcode)) {
+        return res.status(400).json({ errors: { [ZIP_PROPERTY]: 'Invalid Zip Code Given' } })
+    } else {
+        return res.status(200).json({})
+    }
+    if (!row) {
+        let errorMessage = zipcodeRegex.test(zipcode) ?
+            "Unfortunately, we currently don't serve your area." :
+            "Invalid Zip Code Given"
+        return res.status(400).json({ errors: { [ZIP_PROPERTY]: errorMessage } })
+    }
+    /*
     db.get("SELECT zip_code FROM valid_zip_codes WHERE zip_code=?", [zipcode], (err, row) => {
         if (err) {
             return res.status(400).json({ errors: { [ZIP_PROPERTY]: err.message } })
@@ -251,6 +264,7 @@ const validateZipcode = async (zipcode, res) => {
         }
         return res.status(200).json({})
     })
+    */
 }
 
 app.get('/api/validate-zipcode', async (req, res) => {
