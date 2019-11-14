@@ -19,7 +19,10 @@ const ZIP_PROPERTY = 'Zip Code',
     PASSWORD_PROPERTY = 'Password',
     PHONE_PROPERTY = 'Phone Number',
     CONFIRM_PASSWORD_PROPERTY = 'Confirm Password',
-    ADDRESS_PROPERTY = 'Home Address'
+    ADDRESS_PROPERTY = 'Home Address',
+    OLD_PASSWORD_PROPERTY = "Old Password",
+    NEW_PASSWORD_PROPERTY = "New Password",
+    CONFIRM_NEW_PASSWORD_PROPERTY = "Confirm New Password"
 
 db.serialize(() => {
     db.run('CREATE TABLE IF NOT EXISTS valid_zip_codes (zip_code TEXT PRIMARY KEY);')
@@ -78,7 +81,92 @@ const validateJWT = (jwt) => {
     }
     return decryptedPayload.email
 }
+app.post('/api/change-personal-information', (req, res) => {
+    const params = req.body
+    const errors = {}
+    const userEmail = params.userEmail
+    if (!params[NAME_PROPERTY].value) {
+        errors[NAME_PROPERTY] = "Full Name cannot be empty."
+    }
+    if (!params[PHONE_PROPERTY].value) {
+        errors[PHONE_PROPERTY] = "Phone Number cannot be empty"
+    }
+    if (!params[EMAIL_PROPERTY].value) {
+        errors[EMAIL_PROPERTY] = "Email cannot be empty"
+    }
+    if (Object.keys(errors).length !== 0) {
+        return res.status(400).json({ errors: errors })
+    }
+    console.log(errors)
+    const sqlParams = [params[NAME_PROPERTY].value, params[PHONE_PROPERTY].value, params[EMAIL_PROPERTY].value, userEmail]
+    db.run("UPDATE user SET full_name=?, phone=?, email=? WHERE user.email=?", sqlParams, (err) => {
+        if (err) {
+            errors[EMAIL_PROPERTY] = err.message
+        }
+        if (Object.keys(errors).length !== 0) {
+            return res.status(400).json({ errors: errors })
+        }
+        if (userEmail != params[EMAIL_PROPERTY]) {
+            const authToken = generateJWT(params[EMAIL_PROPERTY].value)
+            return res.status(200).json({ authToken: authToken });
+        } else {
+            return res.status(200).json({});
+        }
 
+    })
+})
+app.post('/api/change-address-information', (req, res) => {
+    const params = req.body
+    const errors = {}
+    const userEmail = params.userEmail
+    const zipcode = params[ZIP_PROPERTY].value
+    db.get("SELECT zip_code FROM valid_zip_codes WHERE zip_code=?", [zipcode], (err, row) => {
+        if (err) {
+            return res.status(400).json({ errors: { [ZIP_PROPERTY]: err.message } })
+        }
+        const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
+        if (!row) {
+            let errorMessage = zipcodeRegex.test(zipcode) ?
+                "Unfortunately, we currently don't serve your area." :
+                "Invalid Zip Code Given"
+            return res.status(400).json({ errors: { [ZIP_PROPERTY]: errorMessage } })
+        }
+        const sqlParams = [zipcode, params[ADDRESS_PROPERTY].value, userEmail]
+        console.log(sqlParams)
+        db.run("UPDATE user SET zip_code=?, address=? where user.email=?", sqlParams, (err) => {
+            console.log(err)
+            return res.status(200).json({});
+        })
+    })
+})
+app.post('/api/change-password', (req, res) => {
+    const params = req.body
+    const errors = {}
+    const userEmail = params.userEmail
+    if (!params[NEW_PASSWORD_PROPERTY].value || params[NEW_PASSWORD_PROPERTY].value.length < 8) {
+        errors[NEW_PASSWORD_PROPERTY] = "New Password length must be at least 8."
+    }
+    if (params[NEW_PASSWORD_PROPERTY].value !== params[CONFIRM_NEW_PASSWORD_PROPERTY].value) {
+        errors[CONFIRM_NEW_PASSWORD_PROPERTY] = "Passwords do not match."
+    }
+    db.get('SELECT password FROM user WHERE email=?', [userEmail], (err, row) => {
+        if (err || !row) {
+            return res.status(400).json({ error: "Invalid email and password combination." })
+        } else {
+            bcrypt.compare(params[OLD_PASSWORD_PROPERTY].value, row.password, (err, doesMatch) => {
+                if (!doesMatch) {
+                    return res.status(400).json({ error: "Invalid email and password combination." })
+                }
+                bcrypt.hash(params[NEW_PASSWORD_PROPERTY].value, saltRounds, (err, hash) => {
+                    db.run('UPDATE user SET password=? WHERE user.email=?', [hash, userEmail], (err) => {
+                        console.log(err)
+                        return res.status(200).json({});
+                    })
+                });
+            })
+        }
+    })
+})
 app.post('/api/register', (req, res) => {
     const params = req.body
     const errors = {}
@@ -206,7 +294,6 @@ app.post('/api/add-grocery-item', (req, res) => {
     const groceryName = req.body.groceryName
     const userEmail = req.body.userEmail
     const inputQuantity = req.body.inputQuantity
-    console.log(inputQuantity)
     db.get('SELECT grocery_cart FROM user where user.email=?;', [userEmail], (_, row) => {
         let cart = row.grocery_cart ? JSON.parse(row.grocery_cart) : {}
         cart[groceryName] = parseInt(inputQuantity) + parseInt(cart[groceryName] ? cart[groceryName] : 0)
@@ -226,24 +313,10 @@ app.get('/api/user-settings', (req, res) => {
             [ADDRESS_PROPERTY]: row.address,
             [ZIP_PROPERTY]: row.zip_code,
         }
+        console.log(userSettings)
         return res.status(200).json({ userSettings: userSettings })
     })
 })
-
-app.get('/api/user-settings', (req, res) => {
-    const userEmail = req.query[EMAIL_PROPERTY]
-    db.get('SELECT full_name, email, phone, address, zip_code FROM user WHERE user.email=?;', [userEmail], (_, row) => {
-        const userSettings = {
-            [NAME_PROPERTY]: row.full_name,
-            [EMAIL_PROPERTY]: row.email,
-            [PHONE_PROPERTY]: row.phone,
-            [ADDRESS_PROPERTY]: row.address,
-            [ZIP_PROPERTY]: row.zip_code,
-        }
-        return res.status(200).json({ userSettings: userSettings })
-    })
-})
-
 
 app.get('/api/my-cart', (req, res) => {
     const userEmail = req.query[EMAIL_PROPERTY]

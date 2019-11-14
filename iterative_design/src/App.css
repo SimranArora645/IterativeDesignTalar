@@ -347,6 +347,7 @@ p {
   flex: 1;
   flex-direction: column;
 }
+
 .register-inputs {
   display: flex;
   flex: 1;
@@ -742,15 +743,26 @@ svg.icon-gear {
 .account-settings-outer {
   display: flex;
   flex: 1;
-  min-height: calc(100vh - 160px - 82px);
+  min-width: 500px;
   justify-content: center;
   align-items: center;
   background-color: #fafbfc
 }
-
 .account-settings-form {
-  overflow-y: scroll;
+  display: flex;
   min-height: 300px;
+  min-width: 600px;
+  justify-content: flex-start;
+  flex-direction: column;
+  margin-top: 35px;
+  margin-bottom: 75px;
+}
+.account-settings-inputs {
+  min-height: 300px;
+  min-width: 600px;
+  border-left: 0px;
+  margin: 0px;
+  box-shadow: 2px 1px 2px 0px #c2c2c2
 }
 
 .cart-delivery {
@@ -787,4 +799,16 @@ svg.icon-gear {
 .cart-table-container {
   overflow-y: auto;
   max-height: 300px;
+}
+
+.account-settings {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 500px;
+  font-weight: 500;
+}
+.account-settings-navbar {
+  background: white;
+  margin-top: 25px;
 }

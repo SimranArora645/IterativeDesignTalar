@@ -10,7 +10,6 @@ export default class AppointmentPage extends React.Component {
         checkedAuthentication: false,
     }
     async componentDidMount() {
-        console.log("hi")
         requireAuthentication(userInfo => this.setState({ "sessionUser": userInfo, checkedAuthentication: true }))
     }
     render() {

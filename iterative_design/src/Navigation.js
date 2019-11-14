@@ -17,7 +17,6 @@ export default class Navigation extends React.Component {
         let navbarUrlLabel = {
             "/register": "Sign up",
             "/login": "Log in",
-            "/help": "Help",
             "/pricing": "Pricing Plans",
         }
         let navbarOuterClass = this.state.isHomePage ? "homepage-navbar-item-outer" : "navbar-item-outer"
