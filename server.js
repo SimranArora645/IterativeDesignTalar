@@ -31,7 +31,7 @@ db.serialize(() => {
 })
 
 const app = express();
-app.use(express.static(path.join(__dirname, 'iterative_design/build')))
+app.use(express.static(path.join(__dirname, '/iterative_design/build')))
 app.use(bodyParser.urlencoded({
     extended: true
 }));
