@@ -23,7 +23,7 @@ export default class HomePageRegisterForm extends React.Component {
             <form className="homepage-register-form" >
                 <p className="homepage-register-text">Get groceries delivered straight to your doorstep.</p>
                 <input className="input-group register-input" name="email" onChange={this.inputChangeHandler.bind(this)}
-                    placeholder="Enter your email address" />
+                    placeholder="Enter your email address" autoComplete="off" />
                 <button className="btn homepage-register-button" onClick={this.signupHandler.bind(this)}>Sign up now</button>
             </form >
         )

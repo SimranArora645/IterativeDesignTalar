@@ -1,15 +1,29 @@
 import React from 'react';
-import HomePageNavigation from './HomePageNavigation.js'
+import Navigation from './Navigation.js'
 import HomePageRegisterForm from './HomePageRegisterForm.js'
 import Octicon, { iconsByName } from '@primer/octicons-react'
 import Footer from './Footer.js';
+import { requireAuthentication } from './api'
 
 export default class HomePage extends React.Component {
+    state = {
+        "sessionUser": {},
+        "checkedAuthentication": false,
+    }
+    async componentDidMount() {
+        requireAuthentication(userInfo => this.setState({ "sessionUser": userInfo, checkedAuthentication: true }), false)
+    }
     render() {
+        if (!this.state.checkedAuthentication) {
+            return <div></div>
+        }
+        if (this.state.sessionUser.email) {
+            window.location.href = "/store"
+        }
         return (
             <div>
                 <div className="homepage-banner">
-                    <HomePageNavigation />
+                    <Navigation isHomePage signedIn={!!this.state.sessionUser.email} />
                     <HomePageRegisterForm />
                 </div>
                 <div className="homepage-screen1">

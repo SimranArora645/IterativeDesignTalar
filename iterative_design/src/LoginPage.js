@@ -36,7 +36,7 @@ export default class LoginPage extends React.Component {
                 this.setState({ error: responseBody.error })
             } else {
                 localStorage('authToken', responseBody.authToken)
-                window.location.href = "/grocery-list"
+                window.location.href = "/store"
             }
         })
     }

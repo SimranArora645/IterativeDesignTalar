@@ -8,8 +8,8 @@ import Octicon, { Check } from '@primer/octicons-react'
 export default class PricingPage extends React.Component {
     state = {
         "pricingPlans": [],
-        "sessionUser": {},
         "retrievedPlans": false,
+        "sessionUser": {},
         "checkedAuthentication": false,
     }
     isSignedIn() {
@@ -36,10 +36,11 @@ export default class PricingPage extends React.Component {
             const responseBody = await res.json()
             if (responseBody.error) {
                 //Should never happen.
+                console.log(responseBody.error)
                 alert('500 Internal Server Error')
             } else {
                 const newSessionInfo = this.state.sessionUser
-                newSessionInfo.chosenPlan = planName
+                newSessionInfo.chosenPlan.name = planName
                 this.setState({ sessionUser: newSessionInfo, checkedAuthentication: true })
                 //window.location.href = "/grocery-list"
             }
@@ -54,13 +55,12 @@ export default class PricingPage extends React.Component {
         }
         let key = "";
         let tableHTML = ""
-        console.log(this.state)
         if (this.state.retrievedPlans && this.state.checkedAuthentication) {
             let buttonText = this.isSignedIn() ? 'Pick Your Plan' : 'Get Started'
             let planHeader = this.state.pricingPlans.map((plan) => {
                 let buttonHTML = <button className="btn choose-plan-button" name={plan.name}
                     onClick={this.setPlanHandler.bind(this)}>{buttonText}</button>
-                if (this.isSignedIn() && plan.name === this.state.sessionUser.chosenPlan) {
+                if (this.isSignedIn() && plan.name === this.state.sessionUser.chosenPlan.name) {
                     buttonHTML = <button className="btn chosen-plan-button" name={plan.name}
                         onClick={this.setPlanHandler.bind(this)}>Your Plan</button>
                 }
@@ -80,13 +80,14 @@ export default class PricingPage extends React.Component {
                 'advanced_reports': 'Professional reports',
                 'reduced_waste': 'Reduced Environmental Waste',
                 'encryption': 'AES-256 and SSL encryption',
-                'tracking': 'Online Order Tracking'
+                'tracking': 'Online Order Tracking',
+                'morning_delivery': 'Morning Delivery'
             }
             let planFields = {
-                'FEATURES': ['frequency', 'free_delivery', 'reduced_waste', 'encryption', 'tracking', 'no_hidden_tips'],
+                'FEATURES': ['frequency', 'free_delivery', 'reduced_waste', 'encryption', 'tracking', 'no_hidden_tips', 'morning_delivery'],
                 'REPORTING': ['online_reports', 'advanced_reports', 'support_availability']
             }
-            let alwaysFields = ['reduced_waste', 'no_hidden_tips', 'free_delivery', 'encryption', 'tracking']
+            let alwaysFields = ['reduced_waste', 'no_hidden_tips', 'free_delivery', 'encryption', 'tracking', 'morning_delivery']
             let cellValue = ''
             let planRows = []
             Object.keys(planFields).forEach((category) => {

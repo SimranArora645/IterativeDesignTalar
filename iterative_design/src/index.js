@@ -9,15 +9,18 @@ import HelpPage from './HelpPage';
 import PrivacyPolicyPage from './PrivacyPolicyPage'
 import RegisterPage from './RegisterPage';
 import LoginPage from './LoginPage';
-import ChangeAccountSettingsPage from './ChangeAccountSettingsPage'
-import GroceryListPage from './GroceryListPage'
+import AccountSettingsPage from './AccountSettingsPage'
+import StorePage from './StorePage'
 import GroceryOptionsPage from './GroceryOptionsPage'
+import AppointmentPage from './AppointmentPage'
+import MyCartPage from './MyCartPage'
 import {
     BrowserRouter,
     Route,
     Switch,
     Redirect,
 } from 'react-router-dom';
+
 const routes = {
     "/": HomePage,
     "/contact-us": ContactUsPage,
@@ -26,9 +29,11 @@ const routes = {
     "/register": RegisterPage,
     "/privacy-policy": PrivacyPolicyPage,
     "/grocery-options": GroceryOptionsPage,
-    "/change-account-settings": ChangeAccountSettingsPage,
-    '/grocery-list': GroceryListPage,
+    "/account-settings": AccountSettingsPage,
+    '/store': StorePage,
     "/pricing": PricingPage,
+    "/appointment": AppointmentPage,
+    "/my-cart": MyCartPage,
 }
 const routeHTML = Object.keys(routes).map((url) => {
     return <Route exact path={url} key={url} component={routes[url]} />

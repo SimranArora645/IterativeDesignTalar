@@ -1,0 +1,57 @@
+{
+    "label": "All Items",
+    "children": [
+        {
+            "label": "Produce",
+            "children": [
+                {
+                    "label": "Fruit",
+                    "children": []
+                },
+                {
+                    "label": "Vegetables",
+                    "children": []
+                }
+            ]
+        },
+        {
+            "label": "Cereal",
+            "children": [
+                {
+                    "label": "Heart-Healthy Cereal",
+                    "children": []
+                },
+                {
+                    "label": "Kids' Cereal",
+                    "children": []
+                }
+            ]
+        },
+        {
+            "label": "Dairy",
+            "children": [
+                {
+                    "label": "Milk",
+                    "children": []
+                },
+                {
+                    "label": "Cheese",
+                    "children": []
+                }
+            ]
+        },
+        {
+            "label": "Beverages",
+            "children": [
+                {
+                    "label": "Water",
+                    "children": []
+                },
+                {
+                    "label": "Soda",
+                    "children": []
+                }
+            ]
+        }
+    ]
+}

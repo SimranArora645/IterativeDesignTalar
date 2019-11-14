@@ -17,7 +17,6 @@ export default class RegisterPage extends React.Component {
         [Constants.PHONE_PROPERTY]: { value: "", error: "" },
         [Constants.CONFIRM_PASSWORD_PROPERTY]: { value: "", error: "" },
         [Constants.ADDRESS_PROPERTY]: { value: "", error: "" },
-        [Constants.STATE_PROPERTY]: { value: "Rhode Island", error: "" },
         "sessionUser": {},
         "checkedAuthentication": false,
     }
@@ -35,7 +34,9 @@ export default class RegisterPage extends React.Component {
     setStateForErrors(errors) {
         let newState = this.state
         Constants.INPUT_FIELDS.forEach((key) => {
-            newState[key].error = ""
+            if (newState[key]) {
+                newState[key].error = ""
+            }
         })
         if (errors) {
             Object.keys(errors).forEach((key) => {
@@ -50,7 +51,7 @@ export default class RegisterPage extends React.Component {
     async nextState(event) {
         event.preventDefault()
         let getParams = { [Constants.ZIP_PROPERTY]: this.state[Constants.ZIP_PROPERTY].value }
-        await fetch(generateGetQuery("/validate-zipcode", getParams)).then(async (res) => {
+        await fetch(generateGetQuery("/api/validate-zipcode", getParams)).then(async (res) => {
             const responseBody = await res.json()
             this.setStateForErrors(responseBody.errors)
         })
@@ -69,7 +70,7 @@ export default class RegisterPage extends React.Component {
     registerHandler = async (event) => {
         event.preventDefault()
         let postParams = this.state
-        await fetch("/register", {
+        await fetch("/api/register", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
