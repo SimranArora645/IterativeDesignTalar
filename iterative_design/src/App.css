@@ -1,0 +1,551 @@
+html, body, #root, .app-inner {
+  min-height: 100vh;
+}
+.app-inner {
+  display: flex;
+  flex-direction: column;
+}
+p {
+  font-family: Roboto;
+}
+.octicon-arrow {
+  margin-left: 7px;
+  margin-bottom: 2px;
+}
+.standard-navbar-header {
+  box-shadow: 0 0px 4px 0 #c2c2c2;
+}
+.homepage-navbar {
+  padding:0px;
+  align-items:flex-start;
+}
+.navbar-logo {
+  display: flex;
+  color: #3ecf8e;
+  font-size: 36px;
+  font-family: Roboto;
+  margin: 0px;
+  padding: 16px 24px 10px 24px;
+  margin-left: 15px;
+}
+
+.navbar-item, .homepage-navbar-item {
+  display: flex;
+  color: #3ecf8e;
+  font-size: 20px;
+  font-family: Roboto;
+  margin: 0px;
+  padding: 0px;
+  margin-top:5px;
+}
+.homepage-navbar {
+  display: flex;
+  flex-direction: row;
+}
+.homepage-navbar-logo {
+  color: white;
+  padding: 16px 24px 16px 24px;
+}
+.homepage-navbar-item {
+  color: white;
+}
+
+.navbar-items {
+  display: flex;
+  flex: 1;
+  flex-direction: row-reverse;
+}
+.navbar-logo:hover {
+  text-decoration:none;
+  color: #3ecf8e;
+}
+.navbar-item:hover {
+  text-decoration: none;
+  color: #3ecf8e;
+}
+
+.homepage-navbar-item:hover {
+  text-decoration: none;
+  color: white;
+}
+
+.homepage-navbar-item-outer {
+  margin-right: 30px;
+  padding: 22px 5px 22px 5px;
+  cursor:pointer;
+}
+.navbar-item-outer {
+  margin-right: 30px;
+  padding: 22px 5px 22px 5px;
+  cursor:pointer;
+  border-bottom: 3px solid white;
+}
+.navbar-item-outer:hover {
+  text-decoration: none;
+  border-bottom: 3px solid #3ecf8e;
+}
+.homepage-navbar-item-outer:hover {
+  text-decoration: none;
+  border-bottom: 3px solid white;
+}
+.homepage-banner {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./images/banner5.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size:cover;
+  background-attachment: fixed;
+  min-height: 100vh; 
+}
+
+.homepage-register-form {
+  background-color: white;
+  border-radius: 4px;
+  width: 450px;
+  display: flex;
+  flex-direction: column;
+  margin-left: 100px;
+  margin-top: 100px;
+  padding: 32px;
+}
+.homepage-register-text {
+  color: black;
+  font-family: Roboto;
+  font-size: 24px;
+  text-align: left;
+  margin-bottom: 24px;
+  font-weight: bold;
+}
+.homepage-register-input {
+  border-radius: 3px;
+  padding: 5px;
+  border: 1px solid #c2c2c2;
+}
+.homepage-register-input:focus {
+  outline-width: 0.5px;
+  outline-color: #3ecf8e;
+}
+.homepage-register-button {
+  background: #3ecf8e;
+  color: white;
+  margin-top: 32px;
+  border-radius: 3px;
+  cursor: pointer;
+  padding: 8px 10px 8px 10px;
+  width: 120px;
+  margin-left: auto;
+}
+.homepage-register-button:focus {
+  outline-width: 0px;
+}
+.homepage-screen1 {
+  display: flex;
+  height: 450px;
+  background-color: white;
+  flex-direction: row;
+}
+.homepage-screen2 {
+  display: flex;
+  height: 450px;
+  background-color: white;
+  flex-direction: row;
+}
+.screen1-image {
+  background-image: url("./images/screen1.png");
+  height: 300px;
+  width: 500px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+  margin-left: 100px;
+  margin-right: auto;
+  background-size:contain;
+  background-repeat: no-repeat;
+}
+.screen2-image {
+  background-image: url("./images/screen2.png");
+  height: 400px;
+  width: 500px;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  margin-left: auto;
+  margin-right: 50px;
+  background-size:contain;
+  background-repeat: no-repeat;
+}
+.screen1-description {
+  height: 300px;
+  width: 500px;
+  margin-top: 150px;
+  margin-bottom: 100px;
+  margin-left: auto;
+  margin-right: 100px;
+}
+.screen2-description {
+  height: 300px;
+  width: 500px;
+  margin-top: 150px;
+  margin-bottom: 100px;
+  margin-right: auto;
+  margin-left: 100px;
+}
+.screen-description-title {
+  font-size: 30px;
+  font-weight: bold;
+  color: #07a889;
+}
+.screen-description-text {
+  font-size: 20px;
+  color: #525f7f
+}
+.screen-description-link {
+  color: #6772e5;
+  font-size: 20px;
+  font-family: Roboto;
+}
+
+/* Screen 3 CSS */
+.homepage-screen3 {
+  display: flex;
+  flex-direction: row;
+  background-color: #f5f5fc;
+  width: 100%;
+  margin: 0px;
+}
+.screen3-panel {
+  display: flex;
+  flex-direction: column;
+  height: 550px;
+  padding: 0px;
+  
+}
+.screen3-panel-image {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 75px;
+  height: 200px;
+  width: 50%;
+  background-size:contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+#screen3-panel-image1 {
+  background-image: url("./images/support.svg");
+}
+#screen3-panel-image2 {
+  background-image: url("./images/logistics.svg");
+}
+#screen3-panel-image3 {
+  background-image: url("./images/healthy.svg");
+}
+.screen3-panel-title {
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 30px;
+  font-weight: 500;
+  color: #6772e5;
+}
+.screen3-panel-text {
+  margin-top: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 18px;
+  width: 300px;
+}
+
+/* Footer CSS */
+.footer-outer {
+  display: flex;
+  background-color: #a3dfd1;
+  height: 160px;
+  flex-direction: row;
+}
+.footer-text {
+  color: #7a808a;
+}
+.footer-items {
+  display: flex;
+  flex: 1;
+  flex-direction: row-reverse;
+}
+.footer-item {
+  display: flex;
+  flex-direction: column;
+  margin-right: 100px;
+}
+.footer-item-title {
+  font-size: 24px;
+  margin-top: 15px;
+  display: flex;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.footer-item-link {
+  font-size: 16px;
+  display: flex;
+  margin-bottom: 5px;
+}
+.footer-item-link:hover {
+  text-decoration: none;
+  color: #7a808a;
+}
+.footer-address-title {
+  font-weight: bold;
+  font-size: 24px;
+  margin-left: 100px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+.footer-address-text {
+  margin-left: 100px;
+  font-size: 20px;
+}
+
+/* Register Form */
+.register-outer, .grocery-list-outer, .status-outer {
+  display: flex;
+  flex: 1;
+  min-height: 600px;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafbfc
+}
+.register-form {
+  display: flex;
+  flex-direction: column;
+  background-color:white;
+  width: 500px;
+  margin-top: 25px;
+  margin-bottom: 50px;
+  border-radius: 3px;
+  padding: 50px;
+  box-shadow: 0px 1px 2px 0px #c2c2c2;
+}
+.register-form0 {
+  min-height: 100px;
+}
+.register-form1 {
+  min-height: 600px;
+}
+.register-title {
+  display: flex;
+  font-family: Helvetica;
+  font-size: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 40px;
+  font-weight: 500;
+}
+.register-zip-check {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+.register-inputs {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 300px;
+  font-weight: 500;
+}
+
+.register-inputs-state0 {
+  display: flex;
+  flex-direction: row;
+  min-width: 300px;
+}
+
+#address-input {
+  border-radius: 3px;
+  padding: 10px 15px 10px 15px;
+  border: 1px solid #c2c2c2;
+  height:40px;
+  min-width: 250px;
+  font-size:14px;
+  font-family: Roboto;
+  margin-right: 5px;
+}
+#zip-input {
+  border-radius: 3px;
+  padding: 10px 15px 10px 15px;
+  border: 1px solid #c2c2c2;
+  height:40px;
+  font-size:14px;
+  font-family: Roboto;
+}
+.register-input {
+  border-radius: 5px;
+  padding: 10px 15px 10px 15px;
+  border: 1px solid #c2c2c2;
+  min-width: 300px;
+  height:40px;
+  font-size:18px;
+  font-family: Roboto;
+}
+.input-error {
+  min-height: 25px;
+  min-width: 300px;
+  font-size: 16px;
+  color: #cb1a1a;
+  font-family: Roboto;
+  margin-top: 3px;
+  margin-bottom: 0px;
+}
+.register-input-label {
+  margin-bottom: 3px;
+  margin-top: 10px;
+  font-size: 16px;
+}
+.register-next-button {
+  margin-top: 25px;
+  background-color: #6772e5;
+  color: white;
+  margin-left: auto;
+}
+.register-finish-button {
+  margin-top: 25px;
+  background-color: #3ecf8e;
+  color: white;
+  margin-left: auto;
+}
+/* Login Form */
+.login-title {
+  display: flex;
+  font-family: Helvetica;
+  font-size: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 500;
+  margin-bottom: 0px;
+}
+
+.login-button {
+  margin-top: 25px;
+  background-color: #6772e5;
+  color: white;
+}
+/* Plans Form */
+.plans-outer {
+  display: flex;
+  flex: 1;
+  min-height: 600px;
+  background-color: #fafbfc;
+  flex-direction: column
+}
+.pricing-table {
+  background-color: white;
+  width: 700px;
+  min-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 100px;
+  border-radius: 5px;
+}
+.table-row-name {
+  margin-bottom: 0px;
+  font-size: 16px;
+  font-family: Roboto;
+  font-weight: 400;
+}
+.table-row-value {
+  font-size: 16px;
+  font-family: Roboto;
+  text-align:center;
+}
+.pricing-plan {
+  display: flex;
+  flex-direction: column;
+  background-color:white;
+  width: 300px;
+  height: 200px;
+  margin-bottom: 50px;
+  margin-top: 25px;
+  border: 1px solid #c2c2c2;
+  border-radius: 5px;
+  padding: 50px;
+  box-shadow: 0px 1px 2px 0px #c2c2c2;
+}
+.plans-title {
+  font-size: 36px;
+  color: #525f7f;
+  display: flex;
+  padding-top: 25px;
+  padding-left: 50px;
+  margin-bottom: 50px;
+}
+.table-check-icon {
+  color: #6772e5
+}
+.table-column-header {
+  text-align: center;
+  border-bottom-width: 1px !important;
+}
+.table-column-title {
+  font-size: 18px;
+  font-weight: bold;
+  font-family: Helvetica;
+  margin-bottom: 5px;
+}
+.plan-pricing-value {
+  font-size: 16px;
+  font-weight: 400;
+  font-family: Roboto;
+}
+.choose-plan-button {
+  background:white;
+  color: #6772e5;
+  border: 1px solid #6772e5;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 4px 4px 4px 4px;
+  width: 120px;
+  margin-left: auto;
+  margin-bottom: 10px;
+}
+.choose-plan-button:hover {
+  background:#6772e5;
+  color: white;
+  border: 1px solid #6772e5;
+}
+.chosen-plan-button {
+  background:#6772e5;
+  color: white;
+  border: 1px solid #6772e5;
+  border-radius: 15px;
+  cursor: pointer;
+  padding: 4px 4px 4px 4px;
+  width: 120px;
+  margin-left: auto;
+  margin-bottom: 10px;
+}
+.table-category {
+  padding: 7px 10px 7px 10px !important;
+  background-color: #dee2e6;
+  font: 14px Helvetica;
+  font-weight: bold;
+}
+/* Groceries List */
+.grocery-list-outer {
+  display: flex;
+  flex: 1;
+  min-height: 500px;
+  background-color: #fafbfc;
+  flex-direction: column;
+}
+.grocery-filters {
+  display: flex;
+  height: 50px;
+  width: 100%;
+  background-color:#e6e6e6;
+  align-items: center;
+}
+.grocery-list-items {
+  display: flex;
+  flex: 1;
+}
+.filter-item {
+  border: 1px solid black;
+  border-radius:3px;
+  height: 30px;
+  margin-left: 20px;
+  padding: 2px 10px 2px 10px;
+}
