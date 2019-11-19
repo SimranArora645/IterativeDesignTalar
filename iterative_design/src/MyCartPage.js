@@ -45,7 +45,7 @@ export default class MyCartPage extends React.Component {
         }
         const planText = this.state.sessionUser.chosenPlan.name ? `Your current plan is the ${this.state.sessionUser.chosenPlan.name}. 
         ${this.state.sessionUser.chosenPlan.frequency} the following cart of groceries will be delivered.` :
-            'You have not selected a delivery plan yet, please go to /pricing.'
+            <span>You have not selected a delivery plan yet, <a href="/pricing">choose one here.</a></span>
         let cartCost = 0
         const listHTML = Object.keys(this.state.groceryCart).filter((key) => {
             return this.state.groceryCart[key] !== 0
@@ -65,12 +65,12 @@ export default class MyCartPage extends React.Component {
             <React.Fragment>
                 <Navigation signedIn={!!this.state.sessionUser.email} />
                 <div className="plans-outer">
-                    <p className="cart-title">Your Cart</p>
+                    <p className="cart-title">Shopping Cart</p>
                     <p className="cart-delivery">Delivery Plan: {planText}</p>
                     <div className="cart-list">
-                        <p className="cart-list-title">Order List</p>
+                        <p className="cart-list-title">Items</p>
                         <div className="cart-table-container">
-                            <table class="table cart-table">
+                            <table className="table cart-table">
                                 <thead>
                                     <tr>
                                         <th scope="col">Item</th>

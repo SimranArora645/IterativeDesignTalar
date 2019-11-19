@@ -2,45 +2,29 @@ import React from 'react';
 import './App.css';
 import Navigation from './Navigation';
 import Footer from './Footer';
-import { requireAuthentication, getAllGroceryItems } from './api'
+import { requireAuthentication, getGroceryItems } from './api'
 import GroceryItem from './GroceryItem'
-import filterTree from './filterTree.json'
-
+import Octicon, { getIconByName } from '@primer/octicons-react'
 export default class StorePage extends React.Component {
-    state = {
-        groceryItems: [],
-        retrievedGroceryItems: false,
-        sessionUser: {},
-        checkedAuthentication: false,
-        currentRoot: filterTree,
+    constructor(props) {
+        super(props)
+        const rootCategory = this.props.match.params.category
+        this.state = {
+            categoryItemsMap: [],
+            retrievedGroceryItems: false,
+            sessionUser: {},
+            checkedAuthentication: false,
+            rootCategory: rootCategory ? rootCategory : 'All Items',
+        }
     }
+
     async componentDidMount() {
         requireAuthentication(userInfo => this.setState({ "sessionUser": userInfo, checkedAuthentication: true }))
     }
-
-    changeFilter(event) {
-        event.preventDefault()
-        const nextFilter = event.target.id
-        const children = this.state.currentRoot.children
-        const nextRoot = children.find(el => el.label === nextFilter)
-        this.setState({ currentRoot: nextRoot })
-    }
-    checkFilter(filterCategory, root) {
-        if (root.label === filterCategory) {
-            return true;
-        }
-        if (root.children === []) {
-            return false;
-        }
-        let recursionResult = false;
-        for (let index in root.children) {
-            recursionResult = recursionResult || this.checkFilter(filterCategory, root.children[index])
-        }
-        return recursionResult
-    }
+    c
     clearFilters(event) {
         event.preventDefault()
-        this.setState({ currentRoot: filterTree })
+        this.setState({ currentRoot: "All Items" })
     }
     render() {
         if (!this.state.checkedAuthentication) {
@@ -51,46 +35,47 @@ export default class StorePage extends React.Component {
             return <div></div>
         }
 
-        const groceryCallback = (groceryItems) => {
-            this.setState({ retrievedGroceryItems: true, groceryItems: groceryItems })
+        const groceryCallback = (categoryItemsMap) => {
+            this.setState({ retrievedGroceryItems: true, categoryItemsMap: categoryItemsMap })
         }
         if (!this.state.retrievedGroceryItems) {
-            getAllGroceryItems(groceryCallback)
+            getGroceryItems(this.state.rootCategory, groceryCallback)
         }
 
         if (!this.state.retrievedGroceryItems) {
             return <div></div>
         }
 
-        let listElementsHTML = this.state.currentRoot.children.map((key, idx) => {
-            const label = key.label ? key.label : key
-            return <li className="filter-li" key={label} id={label} onClick={this.changeFilter.bind(this)}>{label}</li>
-        })
-        listElementsHTML.sort((el1, el2) => {
-            return el1.key < el2.key ? -1 : 1
+        const categories = Object.keys(this.state.categoryItemsMap)
+        let listElementsHTML = ""
+        if (categories.length > 1) {
+            listElementsHTML = categories.map((category, idx) => {
+                return <li className="filter-li" key={category + idx} id={category}>
+                    <a className="filter-href" href={`/store/${category}`}>{category}</a>
+                </li>
+            })
+            listElementsHTML.sort((el1, el2) => {
+                return el1.key < el2.key ? -1 : 1
+            })
+        }
+
+        const groceryListHTML = categories.map((category, idx) => {
+            let categoryItems = this.state.categoryItemsMap[category]
+            return <StoreSection category={category} items={categoryItems} key={category + idx}
+                sessionUser={this.state.sessionUser} />
         })
 
         const filterHTML = <div className="grocery-filters">
             <div className="filters-header">
-                <p className="filter-title">Filters</p>
-                <a className="clear-filters-link" onClick={this.clearFilters.bind(this)}>Clear all</a>
+                <p className="filter-title">{this.state.rootCategory}</p>
+                <a className="clear-filters-link" href="/store">Clear all</a>
             </div>
 
-            <p className="main-category">{this.state.currentRoot.label}</p>
+            <p className="main-category">{this.state.currentRoot}</p>
             <ul className="filter-ul">
                 {listElementsHTML}
             </ul>
         </div>
-
-        const currentCategory = this.state.currentRoot.label ? this.state.currentRoot.label : this.state.currentRoot
-
-        const groceryListHTML = this.state.groceryItems.filter((el) => {
-            const result = this.checkFilter(el.category, this.state.currentRoot)
-            return result
-        }).map((item, idx) => {
-            return <GroceryItem itemInfo={item} key={item.name} sessionUser={this.state.sessionUser} />
-        })
-
         return (
             <div>
                 <Navigation signedIn showSearch />
@@ -98,7 +83,7 @@ export default class StorePage extends React.Component {
                     {filterHTML}
                     <div className="grocery-list-inner">
                         <div className="grocery-list-header">
-                            <p className="grocery-list-title">{currentCategory}</p>
+                            <p className="grocery-list-title">{this.state.rootCategory}</p>
                         </div>
                         <div className="grocery-list-items">
                             {groceryListHTML}
@@ -109,5 +94,46 @@ export default class StorePage extends React.Component {
                 <Footer />
             </div>
         )
+    }
+}
+
+class StoreSection extends React.Component {
+    state = {
+        category: this.props.category,
+        items: this.props.items,
+        sessionUser: this.props.sessionUser,
+        index: 0,
+    }
+    MAX_ITEMS = 4
+    nextWindow(event) {
+        event.preventDefault()
+        this.setState({ index: this.state.index + this.MAX_ITEMS })
+    }
+    previousWindow(event) {
+        event.preventDefault()
+        this.setState({ index: this.state.index - this.MAX_ITEMS })
+    }
+    render() {
+        const itemHTML = this.state.items.slice(this.state.index, this.state.index + this.MAX_ITEMS).map((itemInfo, idx) => {
+            return <GroceryItem itemInfo={itemInfo} key={itemInfo.name + idx} sessionUser={this.state.sessionUser}
+                rowLength={this.state.items.length} />
+        })
+        const leftButtonHTML = this.state.index ? <button className="grocery-row-change grocery-row-change-left " onClick={this.previousWindow.bind(this)}>
+            <Octicon className="icon-chevron" icon={getIconByName('chevron-left')} />
+        </button> : <div className="grocery-row-change-placeholder grocery-row-change-left "></div>
+        const rightbuttonHTML = this.state.index + this.MAX_ITEMS < this.state.items.length ?
+            <button className="grocery-row-change grocery-row-change-right " onClick={this.nextWindow.bind(this)}>
+                <Octicon className="icon-chevron" icon={getIconByName('chevron-right')} />
+            </button> : <div className="grocery-row-change-placeholder grocery-row-change-right "></div>
+
+        return <div className="grocery-row-outer">
+            <p className="grocery-row-category">{this.state.category}</p>
+            <div className="row grocery-row">
+                {leftButtonHTML}
+                {itemHTML}
+                {rightbuttonHTML}
+            </div>
+        </div>
+
     }
 }

@@ -29,7 +29,12 @@ db.serialize(() => {
     db.run('CREATE TABLE IF NOT EXISTS plan (name TEXT PRIMARY KEY, frequency TEXT, ' +
         'pricing REAL, support_availability TEXT, free_delivery TEXT, no_hidden_tips TEXT,' +
         'online_reports TEXT, advanced_reports TEXT);')
-    db.run('CREATE TABLE IF NOT EXISTS grocery_item (id integer PRIMARY KEY, name TEXT UNIQUE, quantity REAL, image TEXT, price REAL, category TEXT);')
+    db.run('CREATE TABLE IF NOT EXISTS grocery_category (id INTEGER PRIMARY KEY, parent INTEGER, name TEXT UNIQUE);')
+    db.run('CREATE TABLE IF NOT EXISTS grocery_sources (name TEXT PRIMARY KEY);')
+    db.run('CREATE TABLE IF NOT EXISTS grocery_item (id integer PRIMARY KEY, name TEXT, quantity REAL, quantity_units TEXT, image TEXT,' +
+        'price REAL, category TEXT, source TEXT, weight TEXT, ' +
+        'UNIQUE(name, quantity, quantity_units),' +
+        'FOREIGN KEY(source) REFERENCES grocery_sources(name), FOREIGN KEY(category) REFERENCES grocery_category(name));')
     db.run('CREATE TABLE IF NOT EXISTS user (id integer PRIMARY KEY, full_name TEXT, password TEXT,' +
         'email TEXT UNIQUE, phone TEXT, plan_name TEXT, grocery_cart TEXT, ' +
         'address TEXT, zip_code TEXT,' +
@@ -81,10 +86,15 @@ const validateJWT = (jwt) => {
     }
     return decryptedPayload.email
 }
-app.post('/api/change-personal-information', (req, res) => {
-    const params = req.body
-    const errors = {}
-    const userEmail = params.userEmail
+const validateAddressInformation = (params, errors) => {
+    const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
+    if (!zipcodeRegex.test(params[ZIP_PROPERTY])) {
+        errors[ZIP_PROPERTY] = "Invalid Zip Code Given"
+    }
+    return errors
+}
+
+const validatePersonalInformation = (params, errors) => {
     if (!params[NAME_PROPERTY].value) {
         errors[NAME_PROPERTY] = "Full Name cannot be empty."
     }
@@ -94,42 +104,39 @@ app.post('/api/change-personal-information', (req, res) => {
     if (!params[EMAIL_PROPERTY].value) {
         errors[EMAIL_PROPERTY] = "Email cannot be empty"
     }
+    return errors
+}
+app.post('/api/change-personal-information', (req, res) => {
+    const params = req.body
+    const userEmail = params.userEmail
+    let errors = {}
+    errors = validatePersonalInformation(params, errors)
     if (Object.keys(errors).length !== 0) {
         return res.status(400).json({ errors: errors })
     }
-    console.log(errors)
     const sqlParams = [params[NAME_PROPERTY].value, params[PHONE_PROPERTY].value, params[EMAIL_PROPERTY].value, userEmail]
     db.run("UPDATE user SET full_name=?, phone=?, email=? WHERE user.email=?", sqlParams, (err) => {
         if (err) {
             errors[EMAIL_PROPERTY] = err.message
-        }
-        if (Object.keys(errors).length !== 0) {
             return res.status(400).json({ errors: errors })
         }
         if (userEmail != params[EMAIL_PROPERTY]) {
-            const authToken = generateJWT(params[EMAIL_PROPERTY].value)
-            return res.status(200).json({ authToken: authToken });
-        } else {
-            return res.status(200).json({});
+            const newAuthToken = generateJWT(params[EMAIL_PROPERTY].value)
+            return res.status(200).json({ authToken: newAuthToken });
         }
-
+        return res.status(200).json({});
     })
 })
+
 app.post('/api/change-address-information', (req, res) => {
     const params = req.body
-    const errors = {}
     const userEmail = params.userEmail
     const zipcode = params[ZIP_PROPERTY].value
-    /*
-    db.get("SELECT zip_code FROM valid_zip_codes WHERE zip_code=?", [zipcode], (err, row) => {
-        if (err) {
-            return res.status(400).json({ errors: { [ZIP_PROPERTY]: err.message } })
-        }
-        */
-    const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
-    if (!zipcodeRegex.test(zipcode)) {
-        const errorMessage = "Invalid Zip Code Given"
-        return res.status(400).json({ errors: { [ZIP_PROPERTY]: errorMessage } })
+
+    let errors = {}
+    errors = validateAddressInformation(param, errors)
+    if (Object.keys(errors).length) {
+        return res.status(200).json({ error: errors })
     }
     const sqlParams = [zipcode, params[ADDRESS_PROPERTY].value, userEmail]
     db.run("UPDATE user SET zip_code=?, address=? where user.email=?", sqlParams, (err) => {
@@ -166,16 +173,8 @@ app.post('/api/change-password', (req, res) => {
 })
 app.post('/api/register', (req, res) => {
     const params = req.body
-    const errors = {}
-    if (!params[NAME_PROPERTY].value) {
-        errors[NAME_PROPERTY] = "Full Name cannot be empty."
-    }
-    if (!params[PHONE_PROPERTY].value) {
-        errors[PHONE_PROPERTY] = "Phone Number cannot be empty"
-    }
-    if (!params[EMAIL_PROPERTY].value) {
-        errors[EMAIL_PROPERTY] = "Email cannot be empty"
-    }
+    let errors = {}
+    errors = validatePersonalInformation(params, errors)
 
     if (!params[PASSWORD_PROPERTY].value || params[PASSWORD_PROPERTY].value.length < 8) {
         errors[PASSWORD_PROPERTY] = "Password length must be at least 8."
@@ -190,11 +189,11 @@ app.post('/api/register', (req, res) => {
         } else if (row) {
             errors[EMAIL_PROPERTY] = "Email is already taken."
         }
-        if (Object.keys(errors).length !== 0) {
+        if (Object.keys(errors).length) {
             return res.status(400).json({ errors: errors })
         }
         const paramFields = [NAME_PROPERTY, PASSWORD_PROPERTY, EMAIL_PROPERTY, PHONE_PROPERTY, ADDRESS_PROPERTY, ZIP_PROPERTY]
-        bcrypt.hash(params[PASSWORD_PROPERTY].value, saltRounds, (err, hash) => {
+        bcrypt.hash(params[PASSWORD_PROPERTY].value, saltRounds, (_, hash) => {
             params[PASSWORD_PROPERTY].value = hash
             const sqlParams = paramFields.map((key) => {
                 return params[key].value
@@ -234,39 +233,13 @@ app.post('/api/login', (req, res) => {
     })
 });
 
-const validateZipcode = async (zipcode, res) => {
-    const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
-    if (!zipcodeRegex.test(zipcode)) {
-        return res.status(400).json({ errors: { [ZIP_PROPERTY]: 'Invalid Zip Code Given' } })
-    } else {
-        return res.status(200).json({})
-    }
-    if (!row) {
-        let errorMessage = zipcodeRegex.test(zipcode) ?
-            "Unfortunately, we currently don't serve your area." :
-            "Invalid Zip Code Given"
-        return res.status(400).json({ errors: { [ZIP_PROPERTY]: errorMessage } })
-    }
-    /*
-    db.get("SELECT zip_code FROM valid_zip_codes WHERE zip_code=?", [zipcode], (err, row) => {
-        if (err) {
-            return res.status(400).json({ errors: { [ZIP_PROPERTY]: err.message } })
-        }
-        const zipcodeRegex = RegExp(/^\d{5}$|^\d{5}-\d{4}$/)
-        if (!row) {
-            let errorMessage = zipcodeRegex.test(zipcode) ?
-                "Unfortunately, we currently don't serve your area." :
-                "Invalid Zip Code Given"
-            return res.status(400).json({ errors: { [ZIP_PROPERTY]: errorMessage } })
-        }
-        return res.status(200).json({})
-    })
-    */
-}
 
 app.get('/api/validate-zipcode', async (req, res) => {
-    const zipcode = req.query[ZIP_PROPERTY]
-    return await validateZipcode(zipcode, res)
+    const errors = validateAddressInformation(req.query, {})
+    if (Object.keys(errors).length) {
+        return res.status(400).json({ errors: errors })
+    }
+    return res.status(200).json({})
 })
 
 app.get('/api/pricing-plans', (req, res) => {
@@ -296,8 +269,54 @@ app.post('/api/set-plan', (req, res) => {
 
 
 app.get('/api/all-grocery-items', (req, res) => {
-    db.all('SELECT name, quantity, image, price, category FROM grocery_item;', (_, rows) => {
+    db.all('SELECT name, quantity, quantity_units, image, price, category, source FROM grocery_item;', (_, rows) => {
         return res.status(200).json({ groceryItems: rows })
+    })
+})
+
+const getItems = (categories, callback, limit = 4, offset = 0) => {
+    const sql = "WITH root AS (SELECT id FROM grocery_category WHERE name=?)," +
+        'all_children AS (SELECT child FROM grocery_category_closure JOIN root ' +
+        'ON grocery_category_closure.parent=root.id), ' +
+        'all_categories AS (SELECT name FROM all_children JOIN grocery_category ON grocery_category.id=all_children.child)' +
+        'SELECT item.name, quantity, quantity_units, image, price, item.category, source FROM grocery_item as item JOIN all_categories ' +
+        'ON item.category=all_categories.name limit ? offset ?;'
+    const categoryItemsMap = {}
+    db.serialize(() => {
+        categories.forEach((category, idx) => {
+            db.all(sql, [category, limit, offset], (err, rows) => {
+                categoryItemsMap[category] = rows
+                if (idx === categories.length - 1) {
+                    callback(categoryItemsMap)
+                }
+            })
+        })
+    })
+}
+
+const getSubCategories = (categoryName = 'All Items', callback) => {
+    const sql = 'WITH root AS (SELECT id FROM grocery_category WHERE name=?), ' +
+        'subFilters AS (SELECT closure.child from root join grocery_category_closure as closure ON closure.parent = root.id WHERE depth=1) ' +
+        'SELECT name FROM subFilters JOIN grocery_category ON subFilters.child = grocery_category.id'
+    db.all(sql, [categoryName], (error, rows) => {
+        callback({ error: error, rows: rows })
+    })
+}
+
+app.get('/api/grocery-items', (req, res) => {
+    const rootCategory = req.query.rootCategory
+    getSubCategories(rootCategory, (data) => {
+        if (data.error) {
+            return data.error
+        }
+        let categories = data.rows.map(row => row.name)
+        if (!data.rows.length) {
+            categories = [rootCategory]
+        }
+        getItems(categories, (categoryItemsMap) => {
+            console.log(categoryItemsMap)
+            return res.status(200).json({ categoryItemsMap: categoryItemsMap })
+        }, 16)
     })
 })
 
@@ -324,16 +343,13 @@ app.get('/api/user-settings', (req, res) => {
             [ADDRESS_PROPERTY]: row.address,
             [ZIP_PROPERTY]: row.zip_code,
         }
-        console.log(userSettings)
         return res.status(200).json({ userSettings: userSettings })
     })
 })
 
 app.get('/api/my-cart', (req, res) => {
     const userEmail = req.query[EMAIL_PROPERTY]
-    console.log(userEmail, "email")
     db.get('SELECT grocery_cart FROM user WHERE user.email=?;', [userEmail], (_, row) => {
-        console.log(row)
         if (!row.grocery_cart) {
             return res.status(200).json({ groceryCart: {} })
         }
@@ -348,10 +364,8 @@ app.get('/api/validate-token', (req, res) => {
     if (!email) {
         return res.status(400).json({})
     }
-    console.log("?", email)
     db.get('SELECT plan_name FROM user WHERE user.email=?', [email], (err, row) => {
         if (err || !row) {
-            console.log(row)
             return res.status(200).json({ email: '', chosenPlan: { name: '', frequency: '' } })
         }
         if (!row.plan_name) {
@@ -363,9 +377,7 @@ app.get('/api/validate-token', (req, res) => {
     })
 })
 
-app.get('/api/my-cart', (req, res) => {
 
-})
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/iterative_design/build/index.html'))
 })

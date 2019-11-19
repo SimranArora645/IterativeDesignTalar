@@ -7,6 +7,7 @@ import Footer from './Footer';
 import * as Constants from './constants'
 import { requireAuthentication } from './api'
 import { Redirect } from 'react-router-dom';
+
 export default class RegisterPage extends React.Component {
     state = {
         "registerState": 0,
@@ -80,7 +81,6 @@ export default class RegisterPage extends React.Component {
         }).then(async (res) => {
             const responseBody = await res.json()
             if (responseBody.errors) {
-                console.log(responseBody.errors)
                 this.setStateForErrors(responseBody.errors)
             } else {
                 localStorage('authToken', responseBody.authToken)
@@ -103,7 +103,7 @@ export default class RegisterPage extends React.Component {
                     <div className="register-inputs-state0">
                         <input id="address-input" className="input-group" name={Constants.ADDRESS_PROPERTY} placeholder="Your street address"
                             autoComplete="off" onChange={this.inputChangeHandler.bind(this)} />
-                        <input id="zip-input" className="input-group register-input-state0" name={Constants.ZIP_PROPERTY} autoComplete="off"
+                        <input id={[Constants.ZIP_PROPERTY]} className="input-group register-input-state0 zip-input" name={Constants.ZIP_PROPERTY} autoComplete="off"
                             onChange={this.inputChangeHandler.bind(this)} placeholder="Zip code" />
                     </div>
                     <p className="input-error">{this.state[Constants.ZIP_PROPERTY].error}</p>

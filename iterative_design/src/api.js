@@ -24,8 +24,15 @@ export async function getPlans(callback) {
     })
 }
 
+export async function getGroceryItems(rootCategory, callback) {
+    fetch(generateGetQuery("/api/grocery-items", { rootCategory: rootCategory })).then(async res => {
+        const body = await res.json()
+        callback(body.categoryItemsMap)
+    })
+}
+
 export async function getAllGroceryItems(callback) {
-    fetch(generateGetQuery("/api/all-grocery-items", {})).then(async res => {
+    fetch("/api/all-grocery-items").then(async res => {
         const body = await res.json()
         callback(body.groceryItems)
     })

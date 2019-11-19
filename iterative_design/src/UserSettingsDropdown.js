@@ -9,7 +9,7 @@ export default class UserSettingsDropdown extends React.Component {
         window.location.href = "/"
     }
     render() {
-        return (<Dropdown>
+        return (<Dropdown >
             <Dropdown.Toggle as={UserImage}>
             </Dropdown.Toggle>
 
@@ -33,8 +33,8 @@ class UserImage extends React.Component {
     }
     render() {
         return (
-            <div className="user-settings-container" onClick={this.clickHandler.bind(this)}>
-                <Octicon icon={Gear} className="icon-gear" />
+            <div className="user-settings-container navbar-item" onClick={this.clickHandler.bind(this)}>
+                <div className="user-settings-person-icon"></div>
             </div>
 
         );

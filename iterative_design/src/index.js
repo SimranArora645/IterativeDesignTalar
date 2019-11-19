@@ -31,6 +31,7 @@ const routes = {
     "/grocery-options": GroceryOptionsPage,
     "/account-settings": AccountSettingsPage,
     '/store': StorePage,
+    '/store/:category': StorePage,
     "/pricing": PricingPage,
     "/appointment": AppointmentPage,
     "/my-cart": MyCartPage,

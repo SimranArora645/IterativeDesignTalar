@@ -15,20 +15,17 @@ export default class Navigation extends React.Component {
     render() {
         let searchHTML = ""
         let navbarUrlLabel = {
-            "/register": "Sign up",
             "/login": "Log in",
+            "/register": "Sign up",
             "/pricing": "Pricing Plans",
-            "/privacy-policy": "Privacy Policy"
         }
-        let navbarOuterClass = this.state.isHomePage ? "homepage-navbar-item-outer" : "navbar-item-outer"
         let navbarItemClass = this.state.isHomePage ? "homepage-navbar-item" : "navbar-item"
         if (this.state.signedIn) {
             navbarUrlLabel = {
-                "/": "Log Out",
                 "/my-cart": "My Cart",
+                "/": "Account Settings",
                 "/store": "Store",
                 "/pricing": "Pricing Plans",
-                "/privacy-policy": "Privacy Policy"
             }
             if (this.state.shouldSearch) {
                 searchHTML = <div className="input-search-container">
@@ -43,9 +40,11 @@ export default class Navigation extends React.Component {
             if (url === "/") {
                 return <UserSettingsDropdown key="dropdown" />
             }
-            return (<div className={navbarOuterClass} key={idx}>
-                <a className={"navbar-brand " + navbarItemClass} href={url} >{label}</a>
-            </div>)
+            if (url === "/my-cart") {
+                label = <div className="navbar-cart-item"></div>
+            }
+            return (
+                <a className={"navbar-brand " + navbarItemClass} href={url} key={idx}>{label}</a>)
         })
         const navClass = this.state.isHomePage ? "" : "standard-navbar-header"
         const logoClass = this.state.isHomePage ? "homepage-navbar-logo" : ""
