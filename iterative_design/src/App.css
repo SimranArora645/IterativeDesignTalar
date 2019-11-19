@@ -101,7 +101,7 @@ p {
   background-position: center;
   background-size:cover;
   background-attachment: fixed;
-  min-height: 100vh; 
+  min-height: 100vh;
 }
 
 .homepage-register-form {
@@ -222,7 +222,7 @@ p {
   flex-direction: column;
   height: 550px;
   padding: 0px;
-  
+
 }
 .screen3-panel-image {
   margin-left: auto;
@@ -828,4 +828,22 @@ svg.icon-gear {
   color: #6c757d;
   margin-top: 100px;
   margin-left: 100px;
+}
+.help-FAQs {
+  padding: 70px 10px 7px 25px;
+  background-color: #dee2e6;
+  font: 16px Roboto;
+  font-size: 16px;
+}
+.help-FAQs-answers {
+  padding: 5px 10px 7px 0px;
+  background-color: #dee2e6;
+  font: 16px Roboto;
+  font-size: 16px;
+}
+.help-FAQs-bullet {
+  padding: 1px 5px 2px 50px;
+  background-color: #dee2e6;
+  font: 16px Roboto;
+  font-size: 16px;
 }
