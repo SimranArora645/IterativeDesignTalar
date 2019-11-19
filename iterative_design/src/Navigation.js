@@ -16,8 +16,9 @@ export default class Navigation extends React.Component {
         let searchHTML = ""
         let navbarUrlLabel = {
             "/login": "Log in",
-            "/register": "Sign up",
-            "/pricing": "Pricing Plans",
+            "/register": "Sign Up",
+            "/help": "Help",
+            "/pricing": "Pricing Plans"
         }
         let navbarItemClass = this.state.isHomePage ? "homepage-navbar-item" : "navbar-item"
         if (this.state.signedIn) {
@@ -25,7 +26,8 @@ export default class Navigation extends React.Component {
                 "/my-cart": "My Cart",
                 "/": "Account Settings",
                 "/store": "Store",
-                "/pricing": "Pricing Plans",
+                "/help": "Help",
+                "/pricing": "Pricing Plans"
             }
             if (this.state.shouldSearch) {
                 searchHTML = <div className="input-search-container">
@@ -61,4 +63,3 @@ export default class Navigation extends React.Component {
         )
     }
 }
-
