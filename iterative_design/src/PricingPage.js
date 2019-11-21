@@ -55,84 +55,82 @@ export default class PricingPage extends React.Component {
         }
         let key = "";
         let tableHTML = ""
-        if (this.state.retrievedPlans && this.state.checkedAuthentication) {
-            let buttonText = this.isSignedIn() ? 'Pick Your Plan' : 'Get Started'
-            let planHeader = this.state.pricingPlans.map((plan) => {
-                let buttonHTML = <button className="btn choose-plan-button" name={plan.name}
-                    onClick={this.setPlanHandler.bind(this)}>{buttonText}</button>
-                if (this.isSignedIn() && plan.name === this.state.sessionUser.chosenPlan.name) {
-                    buttonHTML = <button className="btn chosen-plan-button" name={plan.name}
-                        onClick={this.setPlanHandler.bind(this)}>Your Plan</button>
-                }
-                return <td key={plan.name + "-header"} className="table-column-header">
-                    <p className='table-column-title'>{plan.name}</p>
-                    <p className="plan-pricing-value">${plan.pricing}/month</p>
-                    {buttonHTML}
-                </td>
-            })
-
-            const fieldToText = {
-                'frequency': 'Delivery frequency',
-                'support_availability': '24/7 online support',
-                'free_delivery': 'Free delivery',
-                'no_hidden_tips': 'No hidden tips',
-                'online_reports': 'Online reports',
-                'advanced_reports': 'Professional reports',
-                'reduced_waste': 'Reduced Environmental Waste',
-                'encryption': 'AES-256 and SSL encryption',
-                'tracking': 'Online Order Tracking',
-                'morning_delivery': 'Morning Delivery'
-            }
-            let planFields = {
-                'FEATURES': ['frequency', 'free_delivery', 'reduced_waste', 'encryption', 'tracking', 'no_hidden_tips', 'morning_delivery'],
-                'REPORTING': ['online_reports', 'advanced_reports', 'support_availability']
-            }
-            let alwaysFields = ['reduced_waste', 'no_hidden_tips', 'free_delivery', 'encryption', 'tracking', 'morning_delivery']
-            let cellValue = ''
-            let planRows = []
-            Object.keys(planFields).forEach((category) => {
-                planRows.push(<tr key={category}><td className='table-category' colSpan="4">{category}</td></tr>)
-                planFields[category].forEach((field) => {
-                    let planRowItems = this.state.pricingPlans.map((plan) => {
-                        cellValue = plan[field]
-                        if (plan[field] === 'True') {
-                            cellValue = <Octicon icon={Check} className="table-check-icon" />
-                        } else if (plan[field] === 'False') {
-                            cellValue = '-'
-                        } else if (alwaysFields.includes(field)) {
-                            cellValue = <Octicon icon={Check} className="table-check-icon" />
-                        }
-                        return <td className="table-row-value" key={plan.name + field}>{cellValue}</td>
-                    })
-                    key = "row" + key
-                    planRows.push(<tr className="" key={field}>
-                        <th><p className="table-row-name">{fieldToText[field]}</p></th>
-                        {planRowItems}
-                    </tr>)
-                })
-            })
-            tableHTML = (<table className="table table-bordered pricing-table ">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        {planHeader}
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {planRows}
-                </tbody>
-
-            </table>)
-        } else {
-            return <div>
-
-            </div>
+        if (!this.state.retrievedPlans || !this.state.checkedAuthentication) {
+            return <div></div>
         }
+        let buttonText = this.isSignedIn() ? 'Pick Your Plan' : 'Get Started'
+        let planHeader = this.state.pricingPlans.map((plan) => {
+            let buttonHTML = <button className="btn choose-plan-button" name={plan.name}
+                onClick={this.setPlanHandler.bind(this)}>{buttonText}</button>
+            if (this.isSignedIn() && plan.name === this.state.sessionUser.chosenPlan.name) {
+                buttonHTML = <button className="btn chosen-plan-button" name={plan.name}
+                    onClick={this.setPlanHandler.bind(this)}>Your Plan</button>
+            }
+            return <td key={plan.name + "-header"} className="table-column-header">
+                <p className='table-column-title'>{plan.name}</p>
+                <p className="plan-pricing-value">${plan.pricing} / month</p>
+                {buttonHTML}
+            </td>
+        })
+
+        const fieldToText = {
+            'frequency': 'Delivery frequency',
+            'support_availability': '24/7 online support',
+            'free_delivery': 'Free delivery',
+            'no_hidden_tips': 'No hidden tips',
+            'online_reports': 'Online reports',
+            'advanced_reports': 'Professional reports',
+            'reduced_waste': 'Reduced Environmental Waste',
+            'encryption': 'AES-256 and SSL encryption',
+            'tracking': 'Online Order Tracking',
+            'morning_delivery': 'Morning Delivery'
+        }
+        let planFields = {
+            'FEATURES': ['frequency', 'free_delivery', 'reduced_waste', 'encryption', 'tracking', 'no_hidden_tips', 'morning_delivery'],
+            'REPORTING': ['online_reports', 'advanced_reports', 'support_availability']
+        }
+        let alwaysFields = ['reduced_waste', 'no_hidden_tips', 'free_delivery', 'encryption', 'tracking', 'morning_delivery']
+        let cellValue = ''
+        let planRows = []
+        Object.keys(planFields).forEach((category) => {
+            planRows.push(<tr key={category}><td className='table-category' colSpan="4">{category}</td></tr>)
+            planFields[category].forEach((field) => {
+                let planRowItems = this.state.pricingPlans.map((plan) => {
+                    cellValue = plan[field]
+                    if (plan[field] === 'True') {
+                        cellValue = <Octicon icon={Check} className="table-check-icon" />
+                    } else if (plan[field] === 'False') {
+                        cellValue = '-'
+                    } else if (alwaysFields.includes(field)) {
+                        cellValue = <Octicon icon={Check} className="table-check-icon" />
+                    }
+                    return <td className="table-row-value" key={plan.name + field}>{cellValue}</td>
+                })
+                key = "row" + key
+                planRows.push(<tr className="" key={field}>
+                    <th><p className="table-row-name">{fieldToText[field]}</p></th>
+                    {planRowItems}
+                </tr>)
+            })
+        })
+        tableHTML = (<table className="table table-bordered pricing-table ">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    {planHeader}
+                </tr>
+            </thead>
+
+            <tbody>
+                {planRows}
+            </tbody>
+
+        </table>)
+
 
         return (
             <React.Fragment>
-                <Navigation signedIn={!!this.state.sessionUser.email} />
+                <Navigation sessionUser={this.state.sessionUser} />
                 <div className="plans-outer">
                     <p className="plans-title">Choose the right plan for you</p>
                     {tableHTML}

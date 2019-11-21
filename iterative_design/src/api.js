@@ -11,7 +11,6 @@ export async function requireAuthentication(callback, shouldRedirect = true) {
             window.location.href = "/"
         } else {
             const body = await res.json()
-            console.log(body)
             callback(body)
         }
     })
@@ -21,6 +20,13 @@ export async function getPlans(callback) {
     fetch(generateGetQuery("/api/pricing-plans", {})).then(async res => {
         const body = await res.json()
         callback(body.plans)
+    })
+}
+
+export async function getCategoryPath(targetCategory, callback) {
+    fetch(generateGetQuery("/api/category-path", { targetCategory: targetCategory })).then(async res => {
+        const body = await res.json()
+        callback(body.categoryPath)
     })
 }
 

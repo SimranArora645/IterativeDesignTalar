@@ -1,6 +1,5 @@
 import { Dropdown } from 'react-bootstrap'
 import React from 'react'
-import Octicon, { Gear } from '@primer/octicons-react'
 import localStorage from 'local-storage'
 export default class UserSettingsDropdown extends React.Component {
     logoutHandler(event) {

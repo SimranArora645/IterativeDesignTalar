@@ -36,7 +36,7 @@ db.serialize(() => {
         'UNIQUE(name, quantity, quantity_units),' +
         'FOREIGN KEY(source) REFERENCES grocery_sources(name), FOREIGN KEY(category) REFERENCES grocery_category(name));')
     db.run('CREATE TABLE IF NOT EXISTS user (id integer PRIMARY KEY, full_name TEXT, password TEXT,' +
-        'email TEXT UNIQUE, phone TEXT, plan_name TEXT, grocery_cart TEXT, ' +
+        'email TEXT UNIQUE, phone TEXT, plan_name TEXT, grocery_cart TEXT DEFAULT "{}", ' +
         'address TEXT, zip_code TEXT,' +
         'FOREIGN KEY(plan_name) REFERENCES plan(name),' +
         'FOREIGN KEY(zip_code) REFERENCES valid_zip_codes(zip_code));')
@@ -294,15 +294,28 @@ const getItems = (categories, callback, limit = 4, offset = 0) => {
     })
 }
 
-const getSubCategories = (categoryName = 'All Items', callback) => {
+const getSubCategories = (categoryName, callback) => {
     const sql = 'WITH root AS (SELECT id FROM grocery_category WHERE name=?), ' +
-        'subFilters AS (SELECT closure.child from root join grocery_category_closure as closure ON closure.parent = root.id WHERE depth=1) ' +
+        'subFilters AS (SELECT closure.child from root JOIN grocery_category_closure as closure ON closure.parent = root.id WHERE depth=1) ' +
         'SELECT name FROM subFilters JOIN grocery_category ON subFilters.child = grocery_category.id'
     db.all(sql, [categoryName], (error, rows) => {
         callback({ error: error, rows: rows })
     })
 }
-
+app.get('/api/category-path', (req, res) => {
+    const targetCategory = req.query.targetCategory
+    const sql = 'WITH root AS (SELECT id FROM grocery_category WHERE name=?),' +
+        'parents as (SELECT parent, depth FROM root JOIN grocery_category_closure WHERE grocery_category_closure.child=root.id) ' +
+        'SELECT name, depth FROM parents JOIN grocery_category ON grocery_category.id=parents.parent;'
+    db.all(sql, [targetCategory], (_, rows) => {
+        const categoryPath = rows.sort((row1, row2) => {
+            return row2.depth - row1.depth
+        }).map((row) => {
+            return row.name
+        })
+        res.status(200).json({ categoryPath: categoryPath })
+    })
+})
 app.get('/api/grocery-items', (req, res) => {
     const rootCategory = req.query.rootCategory
     getSubCategories(rootCategory, (data) => {
@@ -314,7 +327,6 @@ app.get('/api/grocery-items', (req, res) => {
             categories = [rootCategory]
         }
         getItems(categories, (categoryItemsMap) => {
-            console.log(categoryItemsMap)
             return res.status(200).json({ categoryItemsMap: categoryItemsMap })
         }, 16)
     })
@@ -364,15 +376,19 @@ app.get('/api/validate-token', (req, res) => {
     if (!email) {
         return res.status(400).json({})
     }
-    db.get('SELECT plan_name FROM user WHERE user.email=?', [email], (err, row) => {
+    db.get('SELECT plan_name, grocery_cart FROM user WHERE user.email=?', [email], (err, row) => {
         if (err || !row) {
             return res.status(200).json({ email: '', chosenPlan: { name: '', frequency: '' } })
         }
+        const groceryCart = JSON.parse(row.grocery_cart)
+        const cartCount = Object.keys(groceryCart).reduce((acc, itemName) => {
+            return acc + groceryCart[itemName]
+        }, 0)
         if (!row.plan_name) {
-            return res.status(200).json({ email: email, chosenPlan: { name: '', frequency: '' } })
+            return res.status(200).json({ email: email, cartCount: cartCount, chosenPlan: { name: '', frequency: '' } })
         }
         db.get('SELECT frequency FROM plan WHERE plan.name=?', [row.plan_name], (err, row2) => {
-            return res.status(200).json({ email: email, chosenPlan: { frequency: row2.frequency, name: row.plan_name } })
+            return res.status(200).json({ email: email, cartCount: cartCount, chosenPlan: { frequency: row2.frequency, name: row.plan_name } })
         })
     })
 })

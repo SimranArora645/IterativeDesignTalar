@@ -76,7 +76,6 @@ export default class AccountSettingsPage extends React.Component {
         })
     }
     importSettings(userSettings) {
-        console.log(userSettings)
         const newState = this.state
         Object.keys(userSettings).forEach((key) => {
             if (newState[key]) {
@@ -129,10 +128,9 @@ export default class AccountSettingsPage extends React.Component {
         })
         let linkHTML = ["Personal Information", "Address Information", "Change Password"].map((el, idx) => {
             let linkClass = "nav-link account-settings-link " + (idx === this.state.pageState ? "active" : "")
-            console.log(idx, linkClass)
             return (
-                < li class="nav-item" >
-                    <a class={linkClass} href="#" onClick={(e) => this.changeDisplayState(idx, e)}>
+                < li className="nav-item" key={el}>
+                    <a className={linkClass} href="/" onClick={(e) => this.changeDisplayState(idx, e)}>
                         {el}
                     </a>
                 </li >
@@ -140,10 +138,10 @@ export default class AccountSettingsPage extends React.Component {
         })
         return (
             <React.Fragment>
-                <Navigation signedIn={!!this.state.sessionUser.email} />
+                <Navigation sessionUser={this.state.sessionUser} />
                 <div className="account-settings-outer">
                     <div className="account-settings-form">
-                        <ul class="nav nav-tabs">
+                        <ul className="nav nav-tabs">
                             {linkHTML}
                         </ul>
                         <form className="register-form account-settings-inputs">

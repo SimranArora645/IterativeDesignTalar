@@ -1,6 +1,10 @@
 html, body, #root, .app-inner {
   min-height: 100vh;
 }
+#root {
+  display: flex;
+  flex-direction: column;
+}
 .app-inner {
   display: flex;
   flex-direction: column;
@@ -22,8 +26,7 @@ p {
 .navbar-logo {
   display: flex;
   color: #3ecf8e;
-  font-size: 36px;
-  font-family: Roboto;
+  font: 36px Roboto;
   margin: 0px;
   padding: 16px 24px 10px 24px;
   margin-left: 15px;
@@ -32,8 +35,7 @@ p {
 .navbar-item, .homepage-navbar-item {
   display: flex;
   color: #3ecf8e;
-  font-size: 20px;
-  font-family: Roboto;
+  font: 20px Roboto;
   margin: 0px;
   padding: 0px;
   margin-top:5px;
@@ -47,6 +49,7 @@ p {
   color: white;
   margin-right: 30px;
   padding: 22px 5px 22px 5px;
+  margin-bottom: 3px;
 }
 .homepage-navbar {
   display: flex;
@@ -67,6 +70,7 @@ p {
   text-decoration: none;
   color: white;
   border-bottom: 3px solid white;
+  margin-bottom: 0px;
 }
 
 .navbar-items {
@@ -107,8 +111,7 @@ p {
 }
 .homepage-register-text {
   color: black;
-  font-family: Roboto;
-  font-size: 24px;
+  font: 24px Roboto;
   text-align: left;
   margin-bottom: 24px;
   font-weight: bold;
@@ -186,18 +189,17 @@ p {
   margin-left: 100px;
 }
 .screen-description-title {
-  font-size: 30px;
+  font: 30px Roboto;
   font-weight: bold;
   color: #07a889;
 }
 .screen-description-text {
-  font-size: 20px;
+  font: 20px Roboto;
   color: #525f7f
 }
 .screen-description-link {
   color: #6772e5;
-  font-size: 20px;
-  font-family: Roboto;
+  font: 20px Roboto;
 }
 
 /* Screen 3 CSS */
@@ -534,7 +536,7 @@ p {
 }
 .grocery-filters {
   display: flex;
-  min-width: 200px;
+  min-width: 250px;
   border-right: 1px solid #e6e6e6;
   flex-direction:column;
   padding-left: 40px;
@@ -550,6 +552,7 @@ p {
   font: 16px Roboto;
   text-decoration: underline !important;
   cursor: pointer;
+  padding-right: 10px;
 }
 .clear-filters-link:hover {
   text-decoration: none !important;
@@ -575,6 +578,7 @@ p {
   padding-left: 2px;
 }
 .filter-href {
+  padding-right: 10px;
   font: 16px Roboto;
   color: black;
 }
@@ -592,15 +596,15 @@ p {
   display: flex;
   height: 50px;
   background-color: white;
-
 }
 .grocery-list-title {
   display: flex;
-  font: 24px Roboto;
+  font: 28px Roboto;
   font-weight: bold;
   margin: 0px;
-  margin-left: 40px;
-  margin-top: 15px;
+  margin-left: 35px;
+  margin-top: 20px;
+  align-items:center;
 }
 .grocery-list-items {
   display: flex;
@@ -621,7 +625,6 @@ p {
 .grocery-row-outer {
   display: flex;
   flex-direction: column;
-  border: 1px solid #c2c2c2;
   min-width: 900px;
   width: 100%;
   margin: 25px;
@@ -633,6 +636,7 @@ p {
   width: 30px;
   margin-top: auto;
   margin-bottom: auto;
+  cursor: pointer;
 }
 .grocery-row-change-placeholder {
   display: flex;
@@ -651,8 +655,8 @@ p {
   display: flex;
   font: 20px Roboto;
   font-weight: 700;
-  padding: 10px;
-  border-bottom: 1px solid #c2c2c2;
+  color: #6c757d;
+  margin:0px;
 }
 .grocery-row {
   height: 350px;
@@ -660,14 +664,39 @@ p {
   padding: 10px;
   width: 100%;
   margin: 0px;
+  border-top: 2px solid #c2c2c2;
+  border-bottom: 2px solid #c2c2c2;
 }
-
-.grocery-item {
+.grocery-row-header {
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 5px;
+}
+.grocery-row-see-all {
+  text-decoration: none;
+  margin-left: auto;
+  font: 16px Roboto;
+  color: #1a75ff;
+}
+.grocery-row-see-all:hover {
+  text-decoration: none;
+  color: #0040a3;
+}
+.grocery-item-column {
   min-height: 225px;
   display: flex;
   flex-direction: column;
   padding-bottom: 10px;
-  max-width:300px;
+  max-width: 250px;
+}
+.grocery-item-grid {
+  width: 225px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 10px;
+  margin: 20px;
+  border-bottom: 1px solid #c2c2c2;
 }
 
 .grocery-item-image {
@@ -783,8 +812,9 @@ svg.icon-search {
 }
 .user-settings-person-icon {
   background: url('./images/person.svg');
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 2px;
 }
 
 .user-settings-menu-item {
@@ -888,14 +918,23 @@ svg.icon-search {
   margin-top: 50px;
   margin-left: 100px;
 }
-
+.cart-count {
+  background-color:white;
+  color:#525f7f;
+  font-weight: bold;
+  font: 14px Roboto;
+  margin-bottom: auto;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
 .navbar-cart-item {
-  background-image: url("./images/cart.svg");
+  background: #3ecf8e;
+  mask: url("./images/cart.svg");
   width: 30px;
   height: 30px;
   color: #3ecf8e;
 }
-
 svg.icon-chevron {
   margin-left:auto;
   margin-right:auto;
@@ -904,17 +943,98 @@ svg.icon-chevron {
   padding: 70px 10px 7px 25px;
   background-color: #dee2e6;
   font: 16px Roboto;
-  font-size: 16px;
 }
 .help-FAQs-answers {
   padding: 5px 10px 7px 0px;
   background-color: #dee2e6;
   font: 16px Roboto;
-  font-size: 16px;
 }
 .help-FAQs-bullet {
   padding: 1px 5px 2px 50px;
   background-color: #dee2e6;
   font: 16px Roboto;
-  font-size: 16px;
+}
+.error-header {
+  font: 24px Roboto;
+  color: black;
+  margin-top: 50px;
+  margin-left: 100px;
+}
+.error-description {
+  margin-top: 0px;
+  margin-left: 100px;
+  font: 16px Roboto;
+  color: #6c757d
+}
+.error-page-outer {
+  display: flex;
+  flex: 1;
+  flex-direction:column;
+}
+.category-path-current {
+  font: 20px Roboto;
+  color: black;
+  font-weight: 400;
+  border-bottom: 2px solid white;
+  margin: 0px;
+}
+
+.category-path-link {
+  font: 20px Roboto;
+  color: #3ecf8e;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 400;
+  border-bottom: 2px solid white;
+}
+.category-path-link:hover {
+  color: #31a571;
+  text-decoration: none;
+}
+.grocery-title-icon {
+  margin-left: 2px;
+  margin-right: 2px;
+  width: 20px;
+  height: 20px;
+  color: #6d6e71;
+}
+
+.sort-dropdown {
+  margin-left: auto;
+  background-color: #f2f2f2;
+  border: 1px solid #7a808a;
+  border-radius: 0px;
+
+  color: black;
+  font: 12px Roboto;
+  padding: 5px;
+  align-items:center;
+  display: flex;
+  margin-right: 50px;
+}
+.sort-dropdown::after {
+  display: flex;
+  margin-left: 10px;
+}
+.sort-dropdown-text {
+  margin: 0px;
+  display: flex;
+}
+.sort-dropdown-item-text {
+  margin: 0px;
+  display: flex;
+  font: 14px Roboto;
+}
+.sort-dropdown:hover, .sort-dropdown[aria-expanded="true"] {
+  background-color: #d9d9d9;
+  outline: none;
+  color: black;
+}
+.sort-dropdown:focus {
+  outline: none;
+  box-shadow: none;
+}
+.sort-dropdown-outer {
+  margin-left: auto;
+  margin-top: auto;
 }

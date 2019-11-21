@@ -18,52 +18,45 @@ export default class MyCartPage extends React.Component {
         requireAuthentication(userInfo => this.setState({ "sessionUser": userInfo, checkedAuthentication: true }), false)
     }
     render() {
-        console.log("Start render")
         if (!this.state.checkedAuthentication) {
             return <div></div>
         }
-        console.log(this.state.sessionUser, "Test")
         if (!this.state.sessionUser.email) {
             window.location.href = "/"
             return <div></div>
         }
-        const cartCallback = (groceryCart) => {
-            this.setState({ retrievedCart: true, "groceryCart": groceryCart })
-        }
         if (!this.state.retrievedCart) {
-            getGroceryCart(this.state.sessionUser.email, cartCallback)
-        }
-        const groceryCallback = (groceryItems) => {
-            this.setState({ retrievedGroceryItems: true, groceryItems: groceryItems })
+            getGroceryCart(this.state.sessionUser.email,
+                (groceryCart) => this.setState({ retrievedCart: true, "groceryCart": groceryCart }))
         }
         if (!this.state.retrievedGroceryItems) {
-            getAllGroceryItems(groceryCallback)
+            getAllGroceryItems((groceryItems) => this.setState({ retrievedGroceryItems: true, groceryItems: groceryItems }))
         }
 
         if (!this.state.retrievedGroceryItems || !this.state.retrievedCart) {
             return <div></div>
         }
         const planText = this.state.sessionUser.chosenPlan.name ? `Your current plan is the ${this.state.sessionUser.chosenPlan.name}. 
-        ${this.state.sessionUser.chosenPlan.frequency} the following cart of groceries will be delivered.` :
+        ${this.state.sessionUser.chosenPlan.frequency}, the following cart of groceries will be delivered.` :
             <span>You have not selected a delivery plan yet, <a href="/pricing">choose one here.</a></span>
         let cartCost = 0
         const listHTML = Object.keys(this.state.groceryCart).filter((key) => {
             return this.state.groceryCart[key] !== 0
         }).map((key) => {
             let groceryItem = this.state.groceryItems.find(el => el.name === key)
-            let itemCost = (parseInt(groceryItem.quantity) * parseFloat(groceryItem.price)).toFixed(2)
+            let itemCost = groceryItem.price.toFixed(2)
             let totalCost = (parseFloat(itemCost) * parseInt(this.state.groceryCart[key])).toFixed(2)
             cartCost += parseFloat(totalCost)
-            return <tr>
-                <td>{`${groceryItem.quantity} ${key}`}</td>
+            return <tr key={key}>
+                <td>{`${key}`}</td>
                 <td>{this.state.groceryCart[key]}</td>
-                <td>{itemCost}</td>
+                <td>${itemCost}</td>
                 <td>${totalCost}</td>
             </tr>
         })
         return (
             <React.Fragment>
-                <Navigation signedIn={!!this.state.sessionUser.email} />
+                <Navigation sessionUser={this.state.sessionUser} />
                 <div className="plans-outer">
                     <p className="cart-title">Shopping Cart</p>
                     <p className="cart-delivery">Delivery Plan: {planText}</p>

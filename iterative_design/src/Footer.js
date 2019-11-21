@@ -4,7 +4,7 @@ export default class Footer extends React.Component {
     render() {
         const footerItemsMap = {
             "Support": { "Privacy Policy": "/privacy-policy", "Help": "/help", "Contact Us": "/contact-us" },
-            "Information": { "Grocery Options": "/grocery-options", "Sourcing": "/sourcing", "Hours": "/hours" },
+            "Information": { "Grocery Options": "/grocery-options", "Sourcing": "/sourcing" },
             "Pricing": { "Price Plans": "/pricing", "Plan registration": "/register" },
         }
         const footerItemsHTML = Object.keys(footerItemsMap).map((itemTitle, idx) => {

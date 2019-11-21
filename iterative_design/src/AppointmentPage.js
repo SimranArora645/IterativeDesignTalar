@@ -16,7 +16,6 @@ export default class AppointmentPage extends React.Component {
         if (!this.state.checkedAuthentication) {
             return <div></div>
         }
-        let key = "";
         return (
             <React.Fragment>
                 <Navigation signedIn={!!this.state.sessionUser.email} />

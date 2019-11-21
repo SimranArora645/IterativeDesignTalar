@@ -19,7 +19,7 @@ export default class PrivacyPolicyPage extends React.Component {
         }
         return (
             <React.Fragment>
-                <Navigation signedIn={!!this.state.sessionUser.email} showSearch />
+                <Navigation sessionUser={this.state.sessionUser} />
                 <p className="privacy-policy-header">Privacy Policy</p>
                 <div className="privacy-policy-outer">
                     This privacy notice discloses the privacy practices for (website address). This privacy notice applies solely to information collected by this website. It will notify you of the following:

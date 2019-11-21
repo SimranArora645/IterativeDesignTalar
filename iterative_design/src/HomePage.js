@@ -23,7 +23,7 @@ export default class HomePage extends React.Component {
         return (
             <div>
                 <div className="homepage-banner">
-                    <Navigation isHomePage signedIn={!!this.state.sessionUser.email} />
+                    <Navigation sessionUser={this.state.sessionUser} />
                     <HomePageRegisterForm />
                 </div>
                 <div className="homepage-screen1">
