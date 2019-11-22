@@ -4,6 +4,7 @@ import QuantityDropdown from './QuantityDropdown'
 export default class GroceryItem extends React.Component {
     constructor(props) {
         super(props)
+        console.log(this.props.cartUpdateCallback)
         this.state = {
             cartUpdateCallback: props.cartUpdateCallback,
             image: props.itemInfo.image,

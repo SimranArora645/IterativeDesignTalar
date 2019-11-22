@@ -97,7 +97,7 @@ export default class StorePage extends React.Component {
             }
             groceryListHTML = categoryItems.map((itemInfo) => {
                 return <GroceryItem itemInfo={itemInfo} key={itemInfo.name + itemInfo.quantity + itemInfo.quantity_units}
-                    sessionUser={this.state.sessionUser} useGridFormat />
+                    sessionUser={this.state.sessionUser} useGridFormat cartUpdateCallback={this.cartUpdateCallback.bind(this)} />
             })
             sortHTML = <SortDropdown sortCallback={this.sortCallback.bind(this)} currentSort={this.state.currentSort} />
         } else {
@@ -162,7 +162,7 @@ class StoreSection extends React.Component {
         items: this.props.items,
         sessionUser: this.props.sessionUser,
         index: 0,
-        cartUpdateCallback: this.props.cartUpdateCallback
+        cartUpdateCallback: this.props.cartUpdateCallback,
     }
     MAX_ITEMS = 4
     nextWindow(event) {
@@ -176,7 +176,7 @@ class StoreSection extends React.Component {
     render() {
         const itemHTML = this.state.items.slice(this.state.index, this.state.index + this.MAX_ITEMS).map((itemInfo, idx) => {
             return <GroceryItem itemInfo={itemInfo} key={itemInfo.name + idx} sessionUser={this.state.sessionUser}
-                rowLength={this.state.items.length} cartUpdateCallback={this.state.cartUpdateCallback} />
+                rowLength={this.state.items.length} cartUpdateCallback={this.state.cartUpdateCallback.bind(this)} />
         })
         const leftButtonHTML = this.state.index ? <button className="grocery-row-change grocery-row-change-left " onClick={this.previousWindow.bind(this)}>
             <Octicon className="icon-chevron" icon={getIconByName('chevron-left')} />
