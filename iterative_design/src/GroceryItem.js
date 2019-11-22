@@ -59,7 +59,6 @@ export default class GroceryItem extends React.Component {
             : <p className="grocery-item-per-unit-price">(${perUnitCost} / {singularItem})</p>
 
         const gridItemClass = this.state.useGridFormat ? "grocery-item-grid" : "grocery-item-column col"
-        console.log(this.state.inputQuantity, "!")
         return (
             <div className={gridItemClass}>
                 <div className="grocery-item-image" style={itemStyle}>

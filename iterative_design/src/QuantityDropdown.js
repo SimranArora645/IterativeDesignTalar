@@ -7,7 +7,6 @@ export default class QuantityDropdown extends React.Component {
         inputQuantity: this.props.inputQuantity,
     }
     shouldComponentUpdate(props) {
-        console.log(props, "@")
         return true
     }
     componentDidUpdate() {
