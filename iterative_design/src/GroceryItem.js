@@ -1,5 +1,6 @@
 import React from 'react';
 import Octicon, { Check } from '@primer/octicons-react'
+import QuantityDropdown from './QuantityDropdown'
 export default class GroceryItem extends React.Component {
     constructor(props) {
         super(props)
@@ -14,15 +15,15 @@ export default class GroceryItem extends React.Component {
             sessionUser: props.sessionUser,
             hasBought: false,
             useGridFormat: props.useGridFormat,
+            inputQuantity: 1,
         }
     }
     async buyItem(event) {
         event.preventDefault()
-
         let postParams = {
             userEmail: this.state.sessionUser.email,
             groceryName: this.state.name,
-            inputQuantity: 1
+            inputQuantity: this.state.inputQuantity
         }
         await fetch("/api/add-grocery-item", {
             method: 'POST',
@@ -41,6 +42,9 @@ export default class GroceryItem extends React.Component {
             }
         })
     }
+    updateInputQuantity(inputQuantity) {
+        this.setState({ inputQuantity: inputQuantity })
+    }
     render() {
         const groceryImagePath = "/grocery_images/"
         const itemStyle = { backgroundImage: `url(${groceryImagePath + this.state.image})` }
@@ -52,9 +56,10 @@ export default class GroceryItem extends React.Component {
             singularItem = singularItem.slice(0, -1)
         }
         const perItemCostHTML = parseInt(this.state.quantity) === 1 ? ""
-            : <p className="grocery-item-per-unit-price">(${perUnitCost} / ${singularItem})</p>
+            : <p className="grocery-item-per-unit-price">(${perUnitCost} / {singularItem})</p>
 
         const gridItemClass = this.state.useGridFormat ? "grocery-item-grid" : "grocery-item-column col"
+        console.log(this.state.inputQuantity, "!")
         return (
             <div className={gridItemClass}>
                 <div className="grocery-item-image" style={itemStyle}>
@@ -66,9 +71,13 @@ export default class GroceryItem extends React.Component {
                         {perItemCostHTML}
                     </div>
                     <p className="grocery-item-source">{`Sourced from ${this.state.source}`}</p>
-                    <div className="input grocery-add-button" onClick={this.buyItem.bind(this)}>
-                        {buttonText}
+                    <div className="grocery-add-container">
+                        <QuantityDropdown inputQuantity={this.state.inputQuantity} updateCallback={this.updateInputQuantity.bind(this)} />
+                        <div className="input grocery-add-button" onClick={this.buyItem.bind(this)}>
+                            {buttonText}
+                        </div>
                     </div>
+
                 </div>
             </div>
         )

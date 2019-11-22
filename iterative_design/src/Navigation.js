@@ -35,9 +35,9 @@ export default class Navigation extends React.Component {
             }
 
         }
-        const cartCountHTML = this.state.sessionUser.cartCount ?
-            <div className="cart-count">{this.state.sessionUser.cartCount < 99 ? this.state.sessionUser.cartCount : "99+"}</div>
-            : ""
+        const cartCountHTML = <div className="cart-count">
+            {this.state.sessionUser.cartCount < 99 ? this.state.sessionUser.cartCount : "99+"}
+        </div>
         const navbarHTML = Object.keys(navbarUrlLabel).map((url, idx) => {
             let label = navbarUrlLabel[url]
             if (url === "/") {

@@ -38,7 +38,7 @@ export default class MyCartPage extends React.Component {
         }
         const planText = this.state.sessionUser.chosenPlan.name ? `Your current plan is the ${this.state.sessionUser.chosenPlan.name}. 
         ${this.state.sessionUser.chosenPlan.frequency}, the following cart of groceries will be delivered.` :
-            <span>You have not selected a delivery plan yet, <a href="/pricing">choose one here.</a></span>
+            <span> You have not selected a delivery plan yet, <a className="pricing-redirect" href="/pricing">choose one here</a>.</span>
         let cartCost = 0
         const listHTML = Object.keys(this.state.groceryCart).filter((key) => {
             return this.state.groceryCart[key] !== 0
