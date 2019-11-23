@@ -57,3 +57,26 @@ export async function getGroceryCart(email, callback) {
         callback(body.groceryCart)
     })
 }
+export async function modifyGroceryCart(email, groceryName, inputQuantity, addToExisting, callback) {
+    let postParams = {
+        userEmail: email,
+        groceryName: groceryName,
+        inputQuantity: inputQuantity,
+        addToExisting: addToExisting,
+    }
+    await fetch("/api/modify-grocery-item", {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(postParams)
+    }).then(async (res) => {
+        const responseBody = await res.json()
+        if (responseBody.errors) {
+            alert("An error occurred.")
+        } else {
+            callback()
+        }
+    })
+}

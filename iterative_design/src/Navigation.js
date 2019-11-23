@@ -6,6 +6,7 @@ export default class Navigation extends React.Component {
         super(props)
         this.state = {
             sessionUser: props.sessionUser ? props.sessionUser : {},
+            shouldSearch: props.shouldSearch,
         }
     }
     render() {

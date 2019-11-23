@@ -9,7 +9,7 @@ html, body, #root, .app-inner {
   display: flex;
   flex-direction: column;
 }
-p {
+body {
   font-family: Roboto;
 }
 .octicon-arrow {
@@ -865,7 +865,8 @@ svg.icon-search {
 .cart-list {
   background-color: white;
   border-radius: 4px;
-  width: 600px;
+  width: 700px;
+  height: 400px;
   display: flex;
   margin-left: 50px;
   flex: 1;
@@ -888,9 +889,15 @@ svg.icon-search {
 }
 .cart-table-container {
   overflow-y: auto;
-  max-height: 300px;
+  display: flex;
+  flex: 1;
 }
-
+.cart-table-price-item {
+  min-width: 100px;
+}
+.cart-table-quantity-item {
+  min-width: 125px;
+}
 .account-settings {
   display: flex;
   flex: 1;
@@ -929,6 +936,7 @@ svg.icon-search {
   display: flex;
   align-items: center;
   margin-left: 5px;
+  width: 10px;
 }
 .navbar-cart-item {
   background: #3ecf8e;
@@ -1037,6 +1045,32 @@ svg.icon-chevron {
   margin-left: auto;
   margin-top: auto;
 }
+.quantity-input-container {
+  display: flex;
+  margin-bottom: 6px;
+  height: 24px;
+}
+.quantity-input {
+  display: flex;
+  border: 0px;
+  border-bottom: 1px solid #c2c2c2;
+  width: 40px;
+  margin-left: 5px;
+  font: 16px Roboto;
+}
+.quantity-input-update {
+  display: flex;
+  cursor: pointer;
+  color: #6772e5;
+  margin: 0px;
+  margin-left: 12px;
+  font: 15px Roboto;
+  margin-top: auto;
+  height: 17px;
+}
+.quantity-input:focus {
+  outline: none;
+}
 .quantity-dropdown-outer {
   margin-right: auto;
   margin-top: auto;
@@ -1066,6 +1100,7 @@ svg.icon-chevron {
   margin: 0px;
   display: flex;
   font: 16px Roboto;
+  width: 20px;
 }
 .quantity-dropdown-item-text {
   margin: 0px;
@@ -1084,6 +1119,7 @@ svg.icon-chevron {
 }
 .quantity-dropdown-menu {
   min-width: 0px;
+  overflow: auto;
 }
 .pricing-redirect {
   text-decoration: none;

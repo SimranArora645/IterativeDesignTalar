@@ -1,9 +1,9 @@
 import React from 'react';
 import './App.css';
-import { requireAuthentication, getGroceryCart, getAllGroceryItems } from './api.js'
+import { requireAuthentication, getGroceryCart, getAllGroceryItems, modifyGroceryCart } from './api.js'
 import Navigation from './Navigation';
 import Footer from './Footer';
-
+import QuantityDropdown from './QuantityDropdown'
 export default class MyCartPage extends React.Component {
     state = {
         "sessionUser": {},
@@ -16,6 +16,18 @@ export default class MyCartPage extends React.Component {
 
     async componentDidMount() {
         requireAuthentication(userInfo => this.setState({ "sessionUser": userInfo, checkedAuthentication: true }), false)
+    }
+    updateCallback(itemName, newQuantity) {
+        modifyGroceryCart(this.state.sessionUser.email, itemName, newQuantity, false, () => {
+            let newGroceryCart = this.state.groceryCart
+            newGroceryCart[itemName] = newQuantity
+            let newCartCount = Object.keys(newGroceryCart).reduce((acc, item) => {
+                return acc + parseInt(newGroceryCart[item])
+            }, 0)
+            let newSessionUser = this.state.sessionUser
+            newSessionUser.cartCount = newCartCount
+            this.setState({ groceryCart: newGroceryCart, sessionUser: newSessionUser })
+        })
     }
     render() {
         if (!this.state.checkedAuthentication) {
@@ -38,7 +50,7 @@ export default class MyCartPage extends React.Component {
         }
         const planText = this.state.sessionUser.chosenPlan.name ? `Your current plan is the ${this.state.sessionUser.chosenPlan.name}. 
         ${this.state.sessionUser.chosenPlan.frequency}, the following cart of groceries will be delivered.` :
-            <span> You have not selected a delivery plan yet, <a className="pricing-redirect" href="/pricing">choose one here</a>.</span>
+            <span>You have not selected a delivery plan yet, <a className="pricing-redirect" href="/pricing">choose one here</a>.</span>
         let cartCost = 0
         const listHTML = Object.keys(this.state.groceryCart).filter((key) => {
             return this.state.groceryCart[key] !== 0
@@ -49,9 +61,10 @@ export default class MyCartPage extends React.Component {
             cartCost += parseFloat(totalCost)
             return <tr key={key}>
                 <td>{`${key}`}</td>
-                <td>{this.state.groceryCart[key]}</td>
-                <td>${itemCost}</td>
-                <td>${totalCost}</td>
+                <td className="cart-table-price-item">${itemCost}</td>
+                <td className="cart-table-quantity-item"><QuantityDropdown inputQuantity={this.state.groceryCart[key]}
+                    updateCallback={(quantity) => this.updateCallback(key, quantity)} minQuantity={0} /></td>
+                <td className="cart-table-price-item">${totalCost}</td>
             </tr>
         })
         return (
@@ -67,8 +80,8 @@ export default class MyCartPage extends React.Component {
                                 <thead>
                                     <tr>
                                         <th scope="col">Item</th>
-                                        <th scope="col">Quantity</th>
                                         <th scope="col">Price</th>
+                                        <th scope="col">Quantity</th>
                                         <th scope="col">Total</th>
                                     </tr>
                                 </thead>

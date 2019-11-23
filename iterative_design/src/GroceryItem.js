@@ -1,10 +1,10 @@
 import React from 'react';
 import Octicon, { Check } from '@primer/octicons-react'
 import QuantityDropdown from './QuantityDropdown'
+import { modifyGroceryCart } from './api'
 export default class GroceryItem extends React.Component {
     constructor(props) {
         super(props)
-        console.log(this.props.cartUpdateCallback)
         this.state = {
             cartUpdateCallback: props.cartUpdateCallback,
             image: props.itemInfo.image,
@@ -21,26 +21,10 @@ export default class GroceryItem extends React.Component {
     }
     async buyItem(event) {
         event.preventDefault()
-        let postParams = {
-            userEmail: this.state.sessionUser.email,
-            groceryName: this.state.name,
-            inputQuantity: this.state.inputQuantity
-        }
-        await fetch("/api/add-grocery-item", {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(postParams)
-        }).then(async (res) => {
-            const responseBody = await res.json()
-            if (responseBody.errors) {
-                alert("An error occurred.")
-            } else {
-                this.state.cartUpdateCallback(postParams.inputQuantity)
-                this.setState({ hasBought: true })
-            }
+
+        modifyGroceryCart(this.state.sessionUser.email, this.state.name, this.state.inputQuantity, true, () => {
+            this.state.cartUpdateCallback(this.state.inputQuantity)
+            this.setState({ hasBought: true })
         })
     }
     updateInputQuantity(inputQuantity) {
@@ -72,7 +56,8 @@ export default class GroceryItem extends React.Component {
                     </div>
                     <p className="grocery-item-source">{`Sourced from ${this.state.source}`}</p>
                     <div className="grocery-add-container">
-                        <QuantityDropdown inputQuantity={this.state.inputQuantity} updateCallback={this.updateInputQuantity.bind(this)} />
+                        <QuantityDropdown inputQuantity={this.state.inputQuantity}
+                            updateCallback={this.updateInputQuantity.bind(this)} minQuantity={1} />
                         <div className="input grocery-add-button" onClick={this.buyItem.bind(this)}>
                             {buttonText}
                         </div>

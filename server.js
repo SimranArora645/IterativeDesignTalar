@@ -31,9 +31,8 @@ db.serialize(() => {
         'online_reports TEXT, advanced_reports TEXT);')
     db.run('CREATE TABLE IF NOT EXISTS grocery_category (id INTEGER PRIMARY KEY, parent INTEGER, name TEXT UNIQUE);')
     db.run('CREATE TABLE IF NOT EXISTS grocery_sources (name TEXT PRIMARY KEY);')
-    db.run('CREATE TABLE IF NOT EXISTS grocery_item (id integer PRIMARY KEY, name TEXT, quantity REAL, quantity_units TEXT, image TEXT,' +
+    db.run('CREATE TABLE IF NOT EXISTS grocery_item (id integer PRIMARY KEY, name TEXT UNIQUE, quantity REAL, quantity_units TEXT, image TEXT,' +
         'price REAL, category TEXT, source TEXT, weight TEXT, ' +
-        'UNIQUE(name, quantity, quantity_units),' +
         'FOREIGN KEY(source) REFERENCES grocery_sources(name), FOREIGN KEY(category) REFERENCES grocery_category(name));')
     db.run('CREATE TABLE IF NOT EXISTS user (id integer PRIMARY KEY, full_name TEXT, password TEXT,' +
         'email TEXT UNIQUE, phone TEXT, plan_name TEXT, grocery_cart TEXT DEFAULT "{}", ' +
@@ -332,13 +331,21 @@ app.get('/api/grocery-items', (req, res) => {
     })
 })
 
-app.post('/api/add-grocery-item', (req, res) => {
+app.post('/api/modify-grocery-item', (req, res) => {
     const groceryName = req.body.groceryName
     const userEmail = req.body.userEmail
-    const inputQuantity = req.body.inputQuantity
+    const inputQuantity = parseInt(req.body.inputQuantity)
+    if (isNaN(inputQuantity)) {
+        return res.status(400).json({ error: "Invalid Input Quantity" })
+    }
+    const addToExisting = req.body.addToExisting
     db.get('SELECT grocery_cart FROM user where user.email=?;', [userEmail], (_, row) => {
         let cart = row.grocery_cart ? JSON.parse(row.grocery_cart) : {}
-        cart[groceryName] = parseInt(inputQuantity) + parseInt(cart[groceryName] ? cart[groceryName] : 0)
+        if (addToExisting) {
+            cart[groceryName] = inputQuantity + parseInt(cart[groceryName] ? cart[groceryName] : 0)
+        } else {
+            cart[groceryName] = inputQuantity
+        }
         db.run('UPDATE user SET grocery_cart=? WHERE user.email=?', [JSON.stringify(cart), userEmail], (err) => {
             return res.status(200).json({})
         })
